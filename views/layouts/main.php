@@ -9,6 +9,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 ?>
@@ -29,6 +30,7 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
+        'brandImage' => Url::to('@web/images/logo.svg'),
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [

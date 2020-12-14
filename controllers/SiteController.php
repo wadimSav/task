@@ -8,7 +8,9 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
-use app\models\ContactForm;
+use app\models\ResumeForm;
+use app\models\ExperienceForm;
+use yii\web\UploadedFile as WebUploadedFile;
 
 class SiteController extends Controller
 {
@@ -103,18 +105,18 @@ class SiteController extends Controller
      *
      * @return Response|string
      */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
+    // public function actionContact()
+    // {
+    //     $model = new ContactForm();
+    //     if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
+    //         Yii::$app->session->setFlash('contactFormSubmitted');
 
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
+    //         return $this->refresh();
+    //     }
+    //     return $this->render('contact', [
+    //         'model' => $model,
+    //     ]);
+    // }
 
     /**
      * Displays about page.
@@ -124,5 +126,56 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    /**
+     * Displays myresume page.
+     *
+     * @return string
+     */
+    public function actionMyresume()
+    {
+        return $this->render('myresume');
+    }
+
+    /**
+     * Displays create resume form page.
+     *
+     * @return string
+     */
+    public function actionCreate()
+    {
+        $model = new ResumeForm();
+        $model_exp = new ExperienceForm();
+
+        if($model->load(Yii::$app->request->post()) && $model_exp->load(Yii::$app->request->post())) {
+            $model->image = WebUploadedFile::getInstance($model, 'image');
+            if($model->upload()) {
+                var_dump('file is uploaded successfully');
+            }
+        }
+
+        return $this->render('createResume', [
+            'model' => $model,
+            'model_exp' => $model_exp,
+        ]);
+    }
+
+    /**
+     * Displays experience block via ajax.
+     *
+     * @return string
+     */
+    public function actionExperience()
+    {
+        $model = new ExperienceForm();
+        if(\Yii::$app->request->isAjax){
+            return $this->renderAjax('experience', [
+                'model' => $model,
+            ]);
+        }
+        // return $this->render('createResume', [
+        //     'model' => $model,
+        // ]);
     }
 }

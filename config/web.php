@@ -5,8 +5,10 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
+    'name' => 'TestTask',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'layout' => 'resume',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -43,14 +45,19 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
+        
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => true,
             'rules' => [
+                '/' => 'site/index',
+                'myresume' => 'site/myresume',
+                'create/resume' => 'site/create',
+                'site/experience' => 'site/experience',
             ],
         ],
-        */
+        
     ],
     'params' => $params,
 ];
