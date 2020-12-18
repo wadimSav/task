@@ -14,6 +14,9 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'formatter' => [
+            'locale' => 'ru-RU',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'testtask',
@@ -55,6 +58,10 @@ $config = [
                 'myresume' => 'site/myresume',
                 'create/resume' => 'site/create',
                 'site/experience' => 'site/experience',
+                'myresume/detail/<id:\d+>' => 'site/detail',
+                'myresume/delete/<id:\d+>' => 'site/delete',
+                'myresume/edit/<id:\d+>' => 'site/edit',
+                'myresume/update/<id:\d+>' => 'site/update',
             ],
         ],
         

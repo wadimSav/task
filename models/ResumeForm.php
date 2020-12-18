@@ -3,34 +3,40 @@
 namespace app\models;
 
 use Yii;
-use yii\base\Model;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * ResumeForm is the model behind the resume form.
  */
-class ResumeForm extends Model
+class ResumeForm extends ActiveRecord
 {
-    public $image;              // картинка file
-    public $surname;            // фамилия str
-    public $name;               // имя str
-    public $patronymic;         // отчество str
-    public $date_of_birth;      // дата рождения date
-    public $gender;             // пол str
-    public $city;               // город str
-    public $email;              // почта str
-    public $phone;              // телефон str
-    public $specialization;     // специализация str
-    public $desired_salary;     // желаемая зарплата int
-    public $employment;         // занятость str
-    public $schedule;           // график работы str
-    public $experience;         // опыт работы bool
+    // public $image;              // картинка str
+    // public $surname;            // фамилия str
+    // public $name;               // имя str
+    // public $patronymic;         // отчество str
+    // public $birthday;      // дата рождения date
+    // public $gender;             // пол str
+    // public $city;               // город str
+    // public $email;              // почта str
+    // public $phone;              // телефон str
+    // public $specialization;     // специализация str
+    // public $desired_salary;     // желаемая зарплата int
+    // public $employment;         // занятость str
+    // public $schedule;           // график работы str
+    // public $experience;         // опыт работы bool
+    // public $about;              // о себе str
 
-    // если есть опыт работы делаем запись в таблицу experience
-    // и делаем связь по resume_id
+    // public $saveDir = '/../web/images/';
+    public $file; 
 
-
-    public $about;              // о себе str
-
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return '{{resume}}';
+    }
 
 
     /**
@@ -40,34 +46,98 @@ class ResumeForm extends Model
     {
         return [
             // required fields
-            [['image', 'surname',  'name', 'patronymic', 'date_of_bird', 'gender',
+            [['user_id', 'surname',  'name', 'patronymic', 'gender',
               'city', 'email', 'phone', 'specialization', 'desired_salary', 
-              'employment', 'schedule', 'experience'], 'required'],
-              [['date_of_bird'], 'date', 'format' => 'php:Y-m-d'],
-            // email has to be a valid email address
-            ['email', 'email'],
-            [['image'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg']
+              'employment', 'schedule'], 'required',
+              'message' => 'Поле обязательно к заполнению'],
+
+              ['user_id',  'in', 'range' => range(0, 10),
+               'message' => 'Значение должно цифрой от 0 до 10'],
+            //   ['user_id', 'number','message' => 'Значение не должно быть отрицательным и превышать 500000'],
+
+              // Номер телефона
+              ['phone', 'match', 'pattern' => '/^\+[0-9]{1} [0-9]{3} [0-9]{3}-[0-9]{2}-[0-9]{2}$/',
+               'message' => 'Проверьте правильность введенного номера по шаблону +7 ___ ___-__-__'],
+
+              ['file', 'required', 'message' => 'Пожалуйста, будьте открытым, загрузите Ваше фото'],
+
+              // День рождения
+              ['birthday', 'required', 'message' => 'Укажите пожалуйста вашу дату рождения'],
+
+              [['image', 'about', 'experience'], 'string'],
+
+              [['viewed', 'updated_at'], 'default'],
+              
+              // Желаемая зарплата
+              ['desired_salary', 'in', 'range' => range(0, 500000), 
+              'message' => 'Значение не должно быть отрицательным и превышать 500000'],
+
+              [['file', 'image'], 'safe'],
+
+              // email has to be a valid email address
+              ['email', 'email', 'message' => 'Ведите правильный адрес почтового ящика'],
+              // [['file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg']
 
         ];
     }
 
-    public function upload()
+
+    /**
+     * Связь с таблицей experience
+     */
+    public function getExp()
     {
-        if ($this->validate()) {
-            $this->image->saveAs('/images' . $this->image->baseName . '.' . $this->image->extension);
-            return true;
-        } else {
-            return false;
+       return $this->hasMany(ExperienceForm::className(), ['resume_id' => 'id']);            
+    }
+
+
+    /**
+     * Установка времени создания и обновления записи
+     */
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => 'published_at',
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
+                ],
+                'value' => function() { return Yii::$app->formatter->asDatetime('now', 'php:Y-m-d H:i:s'); } // unix timestamp },
+            ]
+        ];
+    }
+
+    public function my_ucfirst($string, $e ='utf-8') { 
+        if (function_exists('mb_strtoupper') && function_exists('mb_substr') && !empty($string)) { 
+            $string = mb_strtolower($string, $e); 
+            $upper = mb_strtoupper($string, $e); 
+                preg_match('#(.)#us', $upper, $matches); 
+                $string = $matches[1] . mb_substr($string, 1, mb_strlen($string, $e), $e); 
+        } 
+        else { 
+            $string = ucfirst($string); 
+        } 
+        return $string; 
+    }
+
+    public function num2word($num, $words)
+    {
+        $num = $num % 100;
+        if ($num > 19) {
+            $num = $num % 10;
+        }
+        switch ($num) {
+            case 1: {
+                return($words[0]);
+            }
+            case 2: case 3: case 4: {
+                return($words[1]);
+            }
+            default: {
+                return($words[2]);
+            }
         }
     }
 
-    /**
-     * @return array customized attribute labels
-     */
-    // public function attributeLabels()
-    // {
-    //     return [
-    //         'verifyCode' => 'Verification Code',
-    //     ];
-    // }
 }

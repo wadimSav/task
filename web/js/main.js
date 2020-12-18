@@ -120,9 +120,20 @@ $(function () {
     //     return false;
     // });
 
-    // $('.delete-work').click(function (evt) {
+    // $('.delete-resume').click(function (evt) {
     //     evt.preventDefault();
-    //     $(this).parent('.link-delete').detach();
+    //     $.ajax({
+    //         url: evt.target.href,
+    //         type: 'post',
+    //         success: function(res){
+                
+    //             console.log('ok');
+    //         },
+    //         error: function(){
+    //             alert('Error!');
+    //         }
+    //     });
+    //     // return false;
     // });
 
     $('.nselect-2').nSelect();

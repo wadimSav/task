@@ -13,31 +13,27 @@ class m201214_121000_create_resume_table extends Migration
     public function safeUp()
     {
         $this->createTable('{{%resume}}', [
-            'id' => $this->primaryKey(),
-            'image' => $this->string()->notNull(),
-            'surname' => $this->string()->notNull(),
-            'name' => $this->string()->notNull(),
-            'patronymic' => $this->string()->notNull(),
-            'date_of_bird' => $this->date()->notNull(),
-            'gender' => $this->string()->notNull(),
-            'city' => $this->string()->notNull(),
-            'email' => $this->string()->notNull(),
-            'phone' => $this->string()->notNull(),
-            'specialization' => $this->string()->notNull(),
-            'desired_salary' => $this->integer()->notNull(),
-            'employment' => $this->string()->notNull(),
-            'schedule' => $this->string()->notNull(),
-            'experience' => $this->string()->notNull(),
+            'id' => $this->primaryKey()->unique(),
+            'image' => $this->string(),
+            'user_id' => $this->integer(),
+            'surname' => $this->string(),
+            'name' => $this->string(),
+            'patronymic' => $this->string(),
+            'birthday' => $this->string(),
+            'gender' => $this->string(),
+            'city' => $this->string(),
+            'email' => $this->string(),
+            'phone' => $this->string(),
+            'specialization' => $this->string(),
+            'desired_salary' => $this->integer(),
+            'employment' => $this->string(),
+            'schedule' => $this->string(),
+            'experience' => $this->string(),
+            'about' => $this->text(),
+            'viewed' => $this->integer(),
+            'published_at' => $this->dateTime(),
+            'updated_at' => $this->dateTime(),
         ]);
-
-        $this->addForeignKey(
-            'fk-resume-id', 
-            'resume', 
-            'id', 
-            'experience', 
-            'resume_id', 
-            'CASCADE'
-        );
     }
 
     /**
@@ -45,11 +41,6 @@ class m201214_121000_create_resume_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey(
-            'fk-resume-id',
-            'resume'
-        );
-
         $this->dropTable('{{%resume}}');
     }
 }

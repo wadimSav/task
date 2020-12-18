@@ -4,8 +4,9 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
 
-$this->title = 'Новое резюме';
+$this->title = 'Редактирование резюме';
 ?>
 
 <div class="content p-rel">
@@ -19,25 +20,24 @@ $this->title = 'Новое резюме';
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="main-title mb24">Новое резюме</div>
+                    <div class="main-title mb24"><?= $this->title ?></div>
                 </div>
             </div>
             <div class="col-12">
                 <!-- resume form -->
-                <?php $form = ActiveForm::begin(['id' => 'resume-form', 'options' => ['enctype' => 'multipart/form-data']]); ?>
+                <?php $form = ActiveForm::begin(['id' => 'resume-update', 'action' => '/myresume/update/' . $model->id,  'options' => ['enctype' => 'multipart/form-data']]); ?>
                     <div class="row mb32">
                         <div class="col-lg-2 col-md-3 dflex-acenter">
                             <div class="paragraph">Фото</div>
                         </div>
                         <div class="col-lg-3 col-md-4 col-11">
                             <div class="profile-foto-upload mb8">
-                                <!-- <img src="/images/profile-foto.jpg" alt="foto"> -->
-                                <?php //Html::img(Yii::$app->urlManager->createUrl($this->imagePath)) ?>
+                                <img src="<?= $model->image ?>" alt="foto">
                             </div>
                             <label class="custom-file-upload">
 
                                 <?= $form->field($model, 'image', ['enableLabel' => false])
-                                    ->textInput(['type' => 'hidden']) ?>
+                                    ->textInput(['type' => 'hidden', 'value' => $model->image]) ?>
                                 <?= $form->field($model, 'file', ['enableLabel' => false])->fileInput() ?>
 
                                 Изменить фото
@@ -106,7 +106,7 @@ $this->title = 'Новое резюме';
                                         'Мужской' => 'Мужской',
                                         'Женский' => 'Женский'
                                     ], ['item' => function($index = 0, $label, $name, $checked, $value){
-                                        ($index == 0) ? $checked = 'checked' : '' ;
+                                        ($checked == '1') ? $checked = 'checked="' . $checked . '"' : $checked = '' ;
                                         $answer = '<li><input type="radio" id="test'. ++$index .'" name="'. $name .'" ' .$checked.' value="'. $value .'"> ';
                                         $answer .= ($index == 1) ? '<label for="test'. $index .'">Мужской</label>' : '<label for="test'. $index .'">Женский</label></li>';
                                         return $answer;
@@ -249,9 +249,9 @@ $this->title = 'Новое резюме';
                                         'Волонтёрство' => 'Волонтёрство',
                                         'Стажировка' => 'Стажировка'
                                     ],['item' => function($index, $label, $name, $checked, $value){
-                                        // ($index == 0) ? $checked = 'checked' : '' ;
+                                        ($checked == '1') ? $checked = 'checked="' . $checked . '"' : $checked = '' ;
                                         $answer = '<div class="form-check d-flex">';
-                                        $answer .= '<input type="checkbox" name="' . $name . '" class="form-check-input" id="employmentCheck'. ++$index .'" value="' . $value . '"> ';
+                                        $answer .= '<input type="checkbox" name="' . $name . '" class="form-check-input" id="employmentCheck'. ++$index .'" value="' . $value . '" ' . $checked . '> ';
                                         $answer .= '<label class="form-check-label" for="employmentCheck'. $index .'"></label>';
                                         $answer .= '<label class="profile-info__check-text job-resolution-checkbox" for="employmentCheck'. $index .'">' . $label . '</label>';
                                         $answer .= '</div>';
@@ -276,9 +276,9 @@ $this->title = 'Новое резюме';
                                         'Удалённая работа' => 'Удалённая работа',
                                         'Вахтовый метод' => 'Вахтовый метод'
                                     ],['item' => function($index, $label, $name, $checked, $value){
-                                        // ($index == 0) ? $checked = 'checked' : '' ;
+                                        ($checked == '1') ? $checked = 'checked="' . $checked . '"' : $checked = '' ;
                                         $answer = '<div class="form-check d-flex">';
-                                        $answer .= '<input type="checkbox" name="' . $name . '" class="form-check-input" id="scheduleCheck'. ++$index .'" value="' . $value . '"> ';
+                                        $answer .= '<input type="checkbox" name="' . $name . '" class="form-check-input" id="scheduleCheck'. ++$index .'" value="' . $value . '" ' . $checked . '> ';
                                         $answer .= '<label class="form-check-label" for="scheduleCheck'. $index .'"></label>';
                                         $answer .= '<label class="profile-info__check-text job-resolution-checkbox" for="scheduleCheck'. $index .'">' . $label . '</label>';
                                         $answer .= '</div>';
@@ -305,9 +305,8 @@ $this->title = 'Новое резюме';
                                     ->radioList([
                                         'Нет опыта работы' => 'Нет опыта работы',
                                         'Есть опыт работы' => 'Есть опыт работы'
-                                    ], ['item' => function($index = 0, $label, $name, $checked, $value){
-                                        ($index == 0) ? $checked = 'checked' : '' ;
-                                        $answer = '<li><input type="radio" id="test'. ++$index . 'experience" name="'. $name .'" ' .$checked.' value="'. $value .'"> ';
+                                    ], ['item' => function($index, $label, $name, $checked, $value){
+                                        $answer = '<li><input type="radio" id="test'. ++$index . 'experience" name="'. $name .'" checked="' .$checked.'" value="'. $value .'"> ';
                                         $answer .= '<label for="test'. $index . 'experience">' . $label . '</label></li>';
                                         return $answer;
                                     }]) ?>
@@ -328,7 +327,7 @@ $this->title = 'Новое резюме';
         <div class="d-flex justify-content-between">
             <div class="citizenship-select w100 mr16">
 
-            <?= $form->field($model_exp, 'month', ['enableLabel' => false])
+            <?= $form->field($model->exp[0], 'month', ['enableLabel' => false])
                 ->dropDownList([
                     'Январь' => 'Январь',
                     'Февраль' => 'Февраль',
@@ -348,7 +347,7 @@ $this->title = 'Новое резюме';
             </div>
             <div class="citizenship-select w100">
                 <!-- <input name="year" placeholder="2006" type="text" class="dor-input w100" required> -->
-                <?= $form->field($model_exp, 'year', ['enableLabel' => false])
+                <?= $form->field($model->exp[0], 'year', ['enableLabel' => false])
                         ->widget(\yii\widgets\MaskedInput::className(), ['mask' => '9{4}'])
                         ->textInput(['class' => 'dor-input w100'])
                          ?>
@@ -365,7 +364,7 @@ $this->title = 'Новое резюме';
         <div class="d-flex justify-content-between">
             <div class="citizenship-select w100 mr16">
 
-            <?= $form->field($model_exp, 'month_end_work', ['enableLabel' => false])
+            <?= $form->field($model->exp[0], 'month_end_work', ['enableLabel' => false])
                 ->dropDownList([
                     'Январь' => 'Январь',
                     'Февраль' => 'Февраль',
@@ -385,7 +384,7 @@ $this->title = 'Новое резюме';
             </div>
             <div class="citizenship-select w100">
                 <!-- <input name="year_end_work" placeholder="2006" type="text" class="dor-input w100" required> -->
-                     <?= $form->field($model_exp, 'year_end_work', ['enableLabel' => false])
+                     <?= $form->field($model->exp[0], 'year_end_work', ['enableLabel' => false])
                         ->widget(\yii\widgets\MaskedInput::className(), ['mask' => '9{4}'])
                         ->textInput(['class' => 'dor-input w100'])
                          ?>
@@ -400,11 +399,11 @@ $this->title = 'Новое резюме';
         <div class="profile-info">
             <div class="form-check d-flex">
 
-            <?= $form->field($model_exp, 'until_now_work', ['enableLabel' => false])
+            <?= $form->field($model->exp[0], 'until_now_work', ['enableLabel' => false])
                         ->checkboxList([
                             'По настоящее время' => 'По настоящее время'
                         ],['item' => function($index, $label, $name, $checked, $value){
-                            $answer = '<input type="checkbox" name="' . $name . '" class="form-check-input" id="untilCheck'. ++$index .'" value="' . $value . '"> ';
+                            $answer = '<input type="checkbox" name="' . $name . '" class="form-check-input" id="untilCheck'. ++$index .'" value="' . $value . '" ' . $checked . '"> ';
                             $answer .= '<label class="form-check-label" for="untilCheck'. $index .'"></label>';
                             $answer .= '<label class="profile-info__check-text job-resolution-checkbox" for="untilCheck'. $index .'">' . $label . '</label>';
                             return $answer;
@@ -420,7 +419,7 @@ $this->title = 'Новое резюме';
     </div>
     <div class="col-lg-3 col-md-4 col-11">
 
-        <?= $form->field($model_exp, 'organization', ['enableLabel' => false])
+        <?= $form->field($model->exp[0], 'organization', ['enableLabel' => false])
                 ->textInput(['class' => 'dor-input w100'])?>
 
     </div>
@@ -431,7 +430,7 @@ $this->title = 'Новое резюме';
     </div>
     <div class="col-lg-3 col-md-4 col-11">
 
-        <?= $form->field($model_exp, 'exp_spec', ['enableLabel' => false])
+        <?= $form->field($model->exp[0], 'exp_spec', ['enableLabel' => false])
                 ->textInput(['class' => 'dor-input w100'])?>
     </div>
     </div>
@@ -441,7 +440,7 @@ $this->title = 'Новое резюме';
     </div>
     <div class="col-lg-4 col-md-6 col-12">
 
-        <?= $form->field($model_exp, 'responsibility', ['enableLabel' => false])
+        <?= $form->field($model->exp[0], 'responsibility', ['enableLabel' => false])
                 ->textarea(['class' => 'dor-input w100 h96 mb8', 
                 'placeholder' => 'Расскажите о своих обязанностях, функциях и достижениях'])?>
 
