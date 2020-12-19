@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Handles the creation of table `{{%experience}}`.
  */
-class m201214_105708_create_experience_table extends Migration
+class m201219_081847_create_experience_table extends Migration
 {
     /**
      * {@inheritdoc}
@@ -63,3 +63,4 @@ class m201214_105708_create_experience_table extends Migration
         $this->dropTable('{{%experience}}');
     }
 }
+

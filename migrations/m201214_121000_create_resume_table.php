@@ -10,7 +10,7 @@ class m201214_121000_create_resume_table extends Migration
      /**
      * {@inheritdoc}
      */
-    public function safeUp()
+    public function up()
     {
         $this->createTable('{{%resume}}', [
             'id' => $this->primaryKey()->unique(),
@@ -39,7 +39,7 @@ class m201214_121000_create_resume_table extends Migration
     /**
      * {@inheritdoc}
      */
-    public function safeDown()
+    public function down()
     {
         $this->dropTable('{{%resume}}');
     }
