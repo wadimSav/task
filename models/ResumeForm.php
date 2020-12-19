@@ -11,23 +11,7 @@ use yii\db\ActiveRecord;
  */
 class ResumeForm extends ActiveRecord
 {
-    // public $image;              // картинка str
-    // public $surname;            // фамилия str
-    // public $name;               // имя str
-    // public $patronymic;         // отчество str
-    // public $birthday;      // дата рождения date
-    // public $gender;             // пол str
-    // public $city;               // город str
-    // public $email;              // почта str
-    // public $phone;              // телефон str
-    // public $specialization;     // специализация str
-    // public $desired_salary;     // желаемая зарплата int
-    // public $employment;         // занятость str
-    // public $schedule;           // график работы str
-    // public $experience;         // опыт работы bool
-    // public $about;              // о себе str
 
-    // public $saveDir = '/../web/images/';
     public $file; 
 
     /**
@@ -53,7 +37,6 @@ class ResumeForm extends ActiveRecord
 
               ['user_id',  'in', 'range' => range(0, 10),
                'message' => 'Значение должно цифрой от 0 до 10'],
-            //   ['user_id', 'number','message' => 'Значение не должно быть отрицательным и превышать 500000'],
 
               // Номер телефона
               ['phone', 'match', 'pattern' => '/^\+[0-9]{1} [0-9]{3} [0-9]{3}-[0-9]{2}-[0-9]{2}$/',

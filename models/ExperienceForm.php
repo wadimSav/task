@@ -4,21 +4,12 @@ namespace app\models;
 
 use Yii;
 use yii\db\ActiveRecord;
-use yii\helpers\VarDumper;
 
 /**
  * ExperienceForm is the model behind the resume form.
  */
 class ExperienceForm extends ActiveRecord
 {
-    // public $month;              // начало работы месяц (может быть несколько) array
-    // public $year;               // начало работы год (может быть несколько) array
-    // public $month_end_work;     // конец работы месяц (может быть несколько) array
-    // public $year_end_work;      // конец работы год (может быть несколько) array
-    // public $until_now_work;      // по настоящее время (может быть несколько) array
-    // public $organization;       // организация где работал(а) (может быть несколько) array
-    // public $exp_spec;           // должность (может быть несколько) array
-    // public $responsibility;     // функции, достижения (может быть несколько) array
 
     /**
      * @inheritdoc
