@@ -83,7 +83,7 @@ class ResumeForm extends ActiveRecord
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
                 'attributes' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => 'published_at',
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['published_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
                 ],
                 'value' => function() { return Yii::$app->formatter->asDatetime('now', 'php:Y-m-d H:i:s'); } // unix timestamp },

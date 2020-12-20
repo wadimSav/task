@@ -786,6 +786,28 @@ input[type="file"] {
     outline: none;
 }
 
+.dropdown.nselect::after {
+    width: unset;
+    height: unset;
+    position: unset;
+    content: unset;
+    left: unset;
+    top: unset;
+    display: unset;
+}
+
+.dropdown.nselect.dropdownCity {
+    position: relative;
+}
+.dropdown.nselect.dropdownCity:after {
+    right: 10px;
+    top: 8px;
+    content: url(../images/blue-arrow-down.svg);
+    position: absolute;
+    -webkit-transition: -webkit-transform 0.15s;
+    transition: transform 0.15s;
+}
+
 .dropdown-item:focus,
 .dropdown-item:hover {
     background: #edf6fb;

@@ -136,6 +136,17 @@ $(function () {
     //     // return false;
     // });
 
+    // var links = $('.filter').parent().next().find('a');
+    // $('.filter').text(links[0].textContent);
+
+    // $('.filter').click(function(){
+    //     links.click(function(evt){
+    //         let content = $(this).text();
+    //         $('.filter').text(content);
+    //         // console.log($(this).text());
+    //     });
+    // });
+
     $('.nselect-2').nSelect();
     
 

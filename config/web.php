@@ -17,6 +17,9 @@ $config = [
         'formatter' => [
             'locale' => 'ru-RU',
         ],
+        'session'=>[
+            'timeout'=>180,
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'testtask',
@@ -62,6 +65,10 @@ $config = [
                 'myresume/delete/<id:\d+>' => 'site/delete',
                 'myresume/edit/<id:\d+>' => 'site/edit',
                 'myresume/update/<id:\d+>' => 'site/update',
+                'man' => 'site/man',
+                'woman' => 'site/woman',
+                'site/city/<city:[\w_-]+>' => 'site/city',
+                'site/salary/<salary:\d+>' => 'site/salary',
             ],
         ],
         

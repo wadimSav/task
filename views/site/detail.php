@@ -4,6 +4,7 @@
 
 use yii\helpers\Html;
 
+
 $this->title = 'Резюме ' . $resume->specialization;
 ?>
 
@@ -157,7 +158,7 @@ $this->title = 'Резюме ' . $resume->specialization;
                                 <div class="col-lg-7">
                                     <div class="company-profile-text mb64">
                                         <h3 class="heading mb16">Обо мне</h3>
-                                        <p><?= Html::encode($resume->about) ?></p>
+                                        <p><?= Yii::$app->formatter->asText($resume->about) ?></p>
                                     </div>
                                 </div>
                                 <?php } ?>

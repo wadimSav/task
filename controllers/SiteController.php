@@ -3,16 +3,13 @@
 namespace app\controllers;
 
 use Yii;
-use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\Response;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
 use app\models\ResumeForm;
 use app\models\ExperienceForm;
 use yii\helpers\VarDumper;
 use yii\web\UploadedFile as WebUploadedFile;
 use yii\data\ActiveDataProvider;
+use yii\data\Sort;
 
 class SiteController extends Controller
 {
@@ -48,9 +45,112 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        // Так как у нас входа нет создаем в сессии переменную с id пользователя
+        // Так как у нас входа нет создаем в сессии переменную с id пользователя на три минуты
         Yii::$app->session->set('user_id', rand(0, 10));
-        return $this->render('index');
+
+        $cities = ResumeForm::find()->select('city')->all();
+        $listResume = new ActiveDataProvider([
+            // в запросе временно используем id юзера на период разработки
+            // 'query' => ResumeForm::find()->orderBy($sort->orders),
+            'query' => ResumeForm::find(),
+            // поиск связаных моделей надо прописывать отдельно в модели поиска
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+        // VarDumper::dump($cities, 5, true);
+
+        return $this->render('index', [
+            'listResume' => $listResume,
+            'cities' => $cities,
+        ]);
+    }
+
+    /**
+     * Displays homepage.
+     *
+     */
+    public function actionMan()
+    {
+        $cities = ResumeForm::find()->select('city')->all();
+        $listResume = new ActiveDataProvider([
+            // в запросе временно используем id юзера на период разработки
+            // 'query' => ResumeForm::find()->orderBy($sort->orders),
+            'query' => ResumeForm::find()->where(['gender' => 'Мужской']),
+            // поиск связаных моделей надо прописывать отдельно в модели поиска
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        return $this->render('index', [
+            'listResume' => $listResume,
+            'cities' => $cities,
+        ]);
+    }
+
+    /**
+     * Displays homepage.
+     *
+     */
+    public function actionWoman()
+    {
+        $cities = ResumeForm::find()->select('city')->all();
+        $listResume = new ActiveDataProvider([
+            // в запросе временно используем id юзера на период разработки
+            // 'query' => ResumeForm::find()->orderBy($sort->orders),
+            'query' => ResumeForm::find()->where(['gender' => 'Женский']),
+            // поиск связаных моделей надо прописывать отдельно в модели поиска
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        return $this->render('index', [
+            'listResume' => $listResume,
+            'cities' => $cities,
+        ]);
+    }
+
+    /**
+     * Pjax выборка  / города
+     *
+     */
+    public function actionCity($city)
+    {
+        $cities = ResumeForm::find()->select('city')->all();
+        $listResume = new ActiveDataProvider([
+            'query' => ResumeForm::find()->where(['city' => $city]),
+
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        return $this->render('index', [
+            'listResume' => $listResume,
+            'cities' => $cities,
+        ]);
+    }
+
+    /**
+     * Pjax выборка  / зарплата
+     *
+     */
+    public function actionSalary($salary)
+    {
+        $cities = ResumeForm::find()->select('city')->all();
+        $listResume = new ActiveDataProvider([
+            'query' => ResumeForm::find()->where(['between', 'desired_salary', 1, $salary]),
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        return $this->renderAjax('index', [
+            'listResume' => $listResume,
+            'cities' => $cities,
+        ]);
     }
 
     /**
