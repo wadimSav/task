@@ -67,8 +67,9 @@ $config = [
                 'myresume/update/<id:\d+>' => 'site/update',
                 'man' => 'site/man',
                 'woman' => 'site/woman',
-                'site/city/<city:[\w_-]+>' => 'site/city',
-                'site/salary/<salary:\d+>' => 'site/salary',
+                'site/city/<city:[\w_-]+>' => 'site/city', //TODO::исправить пути
+                'site/salary/<salary:\d+>' => 'site/salary', //TODO::исправить пути
+                'generate' => 'site/generate',
             ],
         ],
         

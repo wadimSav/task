@@ -5,7 +5,7 @@
 
 <div class="company-list-search__block-left">
     <div class="resume-list__block-img mb8">
-        <img src="<?= $model->image ?>" alt="profile">
+        <img src="<?= Yii::getAlias('@web/images/faker-images/') . $model->image ?>" alt="profile">
     </div>
 </div>
 <div class="company-list-search__block-right">

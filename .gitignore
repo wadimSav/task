@@ -31,6 +31,7 @@ tests/_support/_generated
 
 #vagrant folder
 /.vagrant
+web/images/faker-images
 web/images/1592745972_4.jpg
 web/images/1592745972_5.jpg
 web/images/1605597087_3.jpg
