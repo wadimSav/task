@@ -15,46 +15,14 @@ use yii\data\Sort;
 class SiteController extends Controller
 {
     /**
-     * {@inheritdoc}
-     */
-    // public function behaviors()
-    // {
-    //     return [
-    //         'access' => [
-    //             'class' => AccessControl::className(),
-    //             'only' => ['logout'],
-    //             'rules' => [
-    //                 [
-    //                     'actions' => ['logout'],
-    //                     'allow' => true,
-    //                     'roles' => ['@'],
-    //                 ],
-    //             ],
-    //         ],
-    //         'verbs' => [
-    //             'class' => VerbFilter::className(),
-    //             'actions' => [
-    //                 'logout' => ['post'],
-    //             ],
-    //         ],
-    //     ];
-    // }
-
-    /**
      * Displays homepage.
      *
      */
     public function actionIndex()
     {
-        // Так как у нас входа нет создаем в сессии переменную с id пользователя на три минуты
-        Yii::$app->session->set('user_id', rand(0, 10));
-
         $cities = ResumeForm::find()->select('city')->all();
         $listResume = new ActiveDataProvider([
-            // в запросе временно используем id юзера на период разработки
-            // 'query' => ResumeForm::find()->orderBy($sort->orders),
             'query' => ResumeForm::find(),
-            // поиск связаных моделей надо прописывать отдельно в модели поиска
             'pagination' => [
                 'pageSize' => 20,
             ],
@@ -75,10 +43,7 @@ class SiteController extends Controller
     {
         $cities = ResumeForm::find()->select('city')->all();
         $listResume = new ActiveDataProvider([
-            // в запросе временно используем id юзера на период разработки
-            // 'query' => ResumeForm::find()->orderBy($sort->orders),
             'query' => ResumeForm::find()->where(['gender' => 'Мужской']),
-            // поиск связаных моделей надо прописывать отдельно в модели поиска
             'pagination' => [
                 'pageSize' => 20,
             ],
@@ -98,10 +63,7 @@ class SiteController extends Controller
     {
         $cities = ResumeForm::find()->select('city')->all();
         $listResume = new ActiveDataProvider([
-            // в запросе временно используем id юзера на период разработки
-            // 'query' => ResumeForm::find()->orderBy($sort->orders),
             'query' => ResumeForm::find()->where(['gender' => 'Женский']),
-            // поиск связаных моделей надо прописывать отдельно в модели поиска
             'pagination' => [
                 'pageSize' => 20,
             ],
@@ -172,14 +134,11 @@ class SiteController extends Controller
      */
     public function actionDetail($id)
     {
-        $session = Yii::$app->session;
-        if ($session->has('user_id')) {
-            $oneResume = ResumeForm::findOne($id);
+        $oneResume = ResumeForm::findOne($id);
 
-            return $this->render('/site/detail', [
-                'resume' => $oneResume,
-            ]);
-        }
+        return $this->render('/site/detail', [
+            'resume' => $oneResume,
+        ]);
     }
 
     /**
@@ -188,24 +147,16 @@ class SiteController extends Controller
      */
     public function actionMyresume()
     {
-        $session = Yii::$app->session;
-        if ($session->has('user_id')) {
-            $user_id = $session->get('user_id');
+        $resumeList = new ActiveDataProvider([
+            'query' => ResumeForm::find()->with('exp'),
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
 
-            $resumeList = new ActiveDataProvider([
-                'query' => ResumeForm::find()->where('user_id = :user_id', [':user_id' => $user_id])
-                    ->with('exp'),
-                'pagination' => [
-                    'pageSize' => 20,
-                ],
-            ]);
-
-            return $this->render('/site/myresume', [
-                'resumeList' => $resumeList
-            ]);
-        }
-
-        // return $this->render('myresume');
+        return $this->render('/site/myresume', [
+            'resumeList' => $resumeList
+        ]);
     }
 
     /**
@@ -229,11 +180,6 @@ class SiteController extends Controller
 
             $model->employment = $model->employment[0];
             $model->schedule = $model->schedule[0];
-
-            $session = Yii::$app->session;
-            if ($session->has('user_id')) {
-                $model->user_id = $session->get('user_id');
-            }
 
             if ($model->save() && $model_exp->load(Yii::$app->request->post())) {
                 $model_exp->resume_id = $model->id;
@@ -279,59 +225,53 @@ class SiteController extends Controller
 
     public function actionUpdate($id)
     {
-        $session = Yii::$app->session;
-        if ($session->has('user_id')) {
-            $oneResume = ResumeForm::findOne($id);
-            if ($oneResume->load(Yii::$app->request->post())) {
-                $oneResume->file = WebUploadedFile::getInstance($oneResume, 'file');
+        $oneResume = ResumeForm::findOne($id);
+        if ($oneResume->load(Yii::$app->request->post())) {
+            $oneResume->file = WebUploadedFile::getInstance($oneResume, 'file');
 
-                if ($oneResume->validate('file')) {
-                    $oneResume->file->saveAs('images/' . $oneResume->file->name);
-                    $oneResume->image = Yii::getAlias('@web/images/') . $oneResume->file->name;
-                }
+            if ($oneResume->validate('file')) {
+                $oneResume->file->saveAs('images/' . $oneResume->file->name);
+                $oneResume->image = Yii::getAlias('@web/images/') . $oneResume->file->name;
+            }
 
-                $oneResume->employment = $oneResume->employment[0];
-                $oneResume->schedule = $oneResume->schedule[0];
+            $oneResume->employment = $oneResume->employment[0];
+            $oneResume->schedule = $oneResume->schedule[0];
 
-                if ($oneResume->save()) {
-                    return $this->redirect(['myresume']);
-                } else {
-                    // VarDumper::dump($oneResume, 5, true);
-                    // var_dump($oneResume->getErrors());
-                }
+            if ($oneResume->save()) {
+                return $this->redirect(['myresume']);
+            } else {
+                // VarDumper::dump($oneResume, 5, true);
+                // var_dump($oneResume->getErrors());
             }
         }
     }
 
     /**
-     * Displays experience block via ajax.
-     *
+     * Generates 100 test resumes in the database
      */
-    // public function actionExperience()
-    // {
-    // $model = new ExperienceForm();
-    // if(\Yii::$app->request->isAjax){
-    //     return $this->renderAjax('experience', [
-    //         'model' => $model,
-    //     ]);
-    // }
-    // return $this->render('createResume', [
-    //     'model' => $model,
-    // ]);
-    // }
-
     public function actionGenerate()
     {
         $faker = Factory::create('ru_RU');
-        $spec = ['Администратор', 'Программист', 'Контент-менеджер', 'Базы данных', 'Верстальщик'];
+        $spec = [
+            'Администратор', 
+            'Программист', 
+            'Контент-менеджер', 
+            'Базы данных', 
+            'Верстальщик'];
         $emp = [
-            'Полная занятость', 'Частичная занятость', 'Проектная/Временная работа',
-            'Волонтёрство', 'Стажировка'
+            'Полная занятость', 
+            'Частичная занятость', 
+            'Проектная/Временная работа',
+            'Волонтёрство', 
+            'Стажировка'
         ];
 
         $shed = [
-            'Полный день', 'Сменный график', 'Гибкий график',
-            'Удалённая работа', 'Вахтовый метод'
+            'Полный день', 
+            'Сменный график', 
+            'Гибкий график',
+            'Удалённая работа', 
+            'Вахтовый метод'
         ];
         $m = [
             'Январь',
@@ -350,9 +290,7 @@ class SiteController extends Controller
 
         for ($i = 0; $i < 100; $i++) {
             $resume = new ResumeForm();
-            // $resume->image = '/images/' . $faker->numberBetween(1, 10);
             $resume->image = $faker->file(Yii::getAlias('@app/web/images/'), Yii::getAlias('@app/web/images/faker-images/'), false);
-            $resume->user_id = $faker->numberBetween(1, 10);
             $resume->surname = (($faker->randomDigit % 2) == 0) ? $faker->firstName('male') : $faker->firstName('female');
             $resume->name = (($faker->randomDigit % 2) == 0) ? $faker->name('male') : $faker->name('female');
             $resume->patronymic = (($faker->randomDigit % 2) == 0) ? $faker->lastName('male') : $faker->lastName('female');

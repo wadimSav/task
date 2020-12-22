@@ -30,13 +30,10 @@ class ResumeForm extends ActiveRecord
     {
         return [
             // required fields
-            [['user_id', 'surname',  'name', 'patronymic', 'gender',
+            [['surname',  'name', 'patronymic', 'gender',
               'city', 'email', 'phone', 'specialization', 'desired_salary', 
               'employment', 'schedule'], 'required',
               'message' => 'Поле обязательно к заполнению'],
-
-              ['user_id',  'in', 'range' => range(0, 10),
-               'message' => 'Значение должно цифрой от 0 до 10'],
 
               // Номер телефона
               ['phone', 'match', 'pattern' => '/^\+[0-9]{1} [0-9]{3} [0-9]{3}-[0-9]{2}-[0-9]{2}$/',
