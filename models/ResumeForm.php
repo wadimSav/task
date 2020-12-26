@@ -35,6 +35,8 @@ class ResumeForm extends ActiveRecord
               'employment', 'schedule'], 'required',
               'message' => 'Поле обязательно к заполнению'],
 
+              [['gender', 'city', 'specialization', 'employment', 'schedule', 'experience'], 'integer'],
+
               // Номер телефона
               ['phone', 'match', 'pattern' => '/^\+[0-9]{1} [0-9]{3} [0-9]{3}-[0-9]{2}-[0-9]{2}$/',
                'message' => 'Проверьте правильность введенного номера по шаблону +7 ___ ___-__-__'],
@@ -44,7 +46,7 @@ class ResumeForm extends ActiveRecord
               // День рождения
               ['birthday', 'required', 'message' => 'Укажите пожалуйста вашу дату рождения'],
 
-              [['image', 'about', 'experience'], 'string'],
+              [['image', 'about'], 'string'],
 
               [['viewed', 'updated_at'], 'default'],
               
@@ -52,11 +54,11 @@ class ResumeForm extends ActiveRecord
               ['desired_salary', 'in', 'range' => range(0, 500000), 
               'message' => 'Значение не должно быть отрицательным и превышать 500000'],
 
-              [['file', 'image'], 'safe'],
+              [['image'], 'safe'],
 
               // email has to be a valid email address
               ['email', 'email', 'message' => 'Ведите правильный адрес почтового ящика'],
-              // [['file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg']
+              [['file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg']
 
         ];
     }
