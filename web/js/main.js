@@ -48,10 +48,6 @@ $(function () {
     });
 });
 
-// $(function () {
-//     $('[data-toggle="tooltip"]').tooltip()
-// });
-
 $(function () {
     $('.navigation-toggler').click(function () {
         $(this).toggleClass('change');
@@ -78,76 +74,5 @@ $(function () {
 });
 
 $(function () {
-
-    // $('#test2experience').click(function () {
-    //     $.ajax({
-    //         url: '/site/experience',
-    //         type: 'get',
-    //         success: function(res){
-    //             $('.add-work').show();
-    //             $('#exp').after(res);
-    //             $('.nselect-exp').nSelect();
-    //             $('.delete-work').click(function (evt) {
-    //                 evt.preventDefault();
-    //                 $(this).parents('.link-delete').detach();
-
-    //             });
-    //         },
-    //         error: function(){
-    //             alert('Error!');
-    //         }
-    //     });
-    //     return false;
-    // });
-
-    // $('#add-work').click(function (evt) {
-    //     evt.preventDefault();
-    //     $.ajax({
-    //         url: '/site/experience',
-    //         type: 'get',
-    //         success: function(res){
-    //             $('#exp').after(res);
-    //             $('#exp').next('.link-delete').find('.nselect-exp').nSelect();
-    //             $('.delete-work').click(function (evt) {
-    //                 evt.preventDefault();
-    //                 $(this).parents('.link-delete').detach();
-    //             });
-    //         },
-    //         error: function(){
-    //             alert('Error!');
-    //         }
-    //     });
-    //     return false;
-    // });
-
-    // $('.delete-resume').click(function (evt) {
-    //     evt.preventDefault();
-    //     $.ajax({
-    //         url: evt.target.href,
-    //         type: 'post',
-    //         success: function(res){
-                
-    //             console.log('ok');
-    //         },
-    //         error: function(){
-    //             alert('Error!');
-    //         }
-    //     });
-    //     // return false;
-    // });
-
-    // var links = $('.filter').parent().next().find('a');
-    // $('.filter').text(links[0].textContent);
-
-    // $('.filter').click(function(){
-    //     links.click(function(evt){
-    //         let content = $(this).text();
-    //         $('.filter').text(content);
-    //         // console.log($(this).text());
-    //     });
-    // });
-
     $('.nselect-2').nSelect();
-    
-
 });
