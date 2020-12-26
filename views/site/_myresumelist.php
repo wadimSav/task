@@ -1,12 +1,3 @@
-<?php 
-
-use yii\helpers\Html;
-use yii\helpers\HtmlPurifier;
-
-
-// Yii::$app->formatter->locale = 'ru_RU';
-?>
-
 <div class="row">
     <div class="my-resume-dropdown dropdown show mb8">
         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
@@ -15,10 +6,7 @@ use yii\helpers\HtmlPurifier;
         </a>
         <div class="dropdown-menu dropdown-menu-right"
                 aria-labelledby="dropdownMenuLink">
-
-            <!-- Сделать функционал редактирования своих резюме -->
             <a class="dropdown-item mod-resume" href="/myresume/edit/<?= $model->id ?>">Редактировать</a>
-            <!-- Сделать функционал удаления своих резюме -->
             <a class="dropdown-item delete-resume" href="/myresume/delete/<?= $model->id ?>">Удалить</a>
         </div>
     </div>
@@ -40,8 +28,7 @@ use yii\helpers\HtmlPurifier;
             </div>
         </div>
     </div>
-    <div
-            class="col-xl-12 d-flex justify-content-between align-items-center flex-wrap">
+    <div class="col-xl-12 d-flex justify-content-between align-items-center flex-wrap">
         <div class="d-flex flex-wrap mobile-mb12">
             <a class="mr16" href="myresume/detail/<?= $model->id ?>">Открыть</a>
         </div>
