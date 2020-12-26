@@ -55,7 +55,7 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => true,
+            'enableStrictParsing' => false,
             'rules' => [
                 '/' => 'site/index',
                 'myresume' => 'site/myresume',
@@ -65,10 +65,6 @@ $config = [
                 'myresume/delete/<id:\d+>' => 'site/delete',
                 'myresume/edit/<id:\d+>' => 'site/edit',
                 'myresume/update/<id:\d+>' => 'site/update',
-                'man' => 'site/man',
-                'woman' => 'site/woman',
-                'site/city/<city:[\w_-]+>' => 'site/city', //TODO::исправить пути
-                'site/salary/<salary:\d+>' => 'site/salary', //TODO::исправить пути
                 'generate' => 'site/generate',
             ],
         ],
