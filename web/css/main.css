@@ -1935,24 +1935,16 @@ input[type="file"] {
 
 .company-list-search__block {
     padding: 16px 10px 8px 10px;
-}
-
-.company-list-search__block-left {
     display: flex;
-    min-width: 110px;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 32px;
-    float: left;
 }
 
 .company-list-search__block-right {
-    padding-left: 142px;
+    padding-left: 30px;
 }
 
 .company-list-search__block-middle {
     padding-right: 16px;
-    padding-left: 142px;
+    /* padding-left: 30px; */
 }
 
 .fa-star {
