@@ -12,6 +12,7 @@ use app\models\enums\Monts;
         <img src="<?= Yii::getAlias('@web/images/faker-images/') . $model->image ?>" alt="profile">
     </div>
 </div>
+<a href="myresume/detail/<?= $model->id ?>">
 <div class="company-list-search__block-right">
 
     <?php if($model->updated_at === NULL) { ?>
@@ -67,4 +68,5 @@ use app\models\enums\Monts;
         </div>
     <?php } ?>
 </div>
+</a>
 
