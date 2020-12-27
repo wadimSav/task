@@ -89,6 +89,32 @@ $(document).ready(function() {
             container: '#p0'
         });
     })
+    $('#resumesearch-employment>.form-check>input:checkbox').click(function(evt) {
+        const url = new URL(window.location);  // == window.location.href
+        let empParam = '';
+        $('#resumesearch-employment>.form-check>input:checkbox:checked').each(function(){
+            empParam += $(this).val();
+        })
+        url.searchParams.set('employment', empParam); 
+        history.pushState(null, null, url);    // == url.href
+        $.pjax({
+            url: url,
+            container: '#p0'
+        });
+    })
+    $('#resumesearch-schedule>.form-check>input:checkbox').click(function(evt) {
+        const url = new URL(window.location);  // == window.location.href
+        let empParam = '';
+        $('#resumesearch-schedule>.form-check>input:checkbox:checked').each(function(){
+            empParam += $(this).val();
+        })
+        url.searchParams.set('schedule', empParam); 
+        history.pushState(null, null, url);    // == url.href
+        $.pjax({
+            url: url,
+            container: '#p0'
+        });
+    })
 });
 
 JS;
@@ -108,10 +134,15 @@ $this->registerJs($script);
 
 <div class="content">
     <div class="container">
-        <h1 class="main-title mt24 mb16">PHP разработчики в Кемерово</h1>
+        <h1 class="main-title mt24 mb16"><?= $this->title; ?></h1>
         <button class="vacancy-filter-btn">Фильтр</button>
         <div class="row">
             <div class="col-lg-9 desctop-992-pr-16">
+                <?php Pjax::begin([
+                    'enablePushState' => true, 
+                    'formSelector' => '#searcher',
+                    'linkSelector' => '.run-pjax',
+                ]); ?>
                 <div class="d-flex align-items-center flex-wrap mb8">
                     <span class="paragraph mr16">Найдено <?= $listResume->totalCount ?> резюме</span>
                     <div class="vakancy-page-header-dropdowns">
@@ -135,12 +166,6 @@ $this->registerJs($script);
                         </div>
                     </div>
                 </div>
-                <?php Pjax::begin([
-                    'timeout' => 100000, 
-                    'enablePushState' => true, 
-                    'formSelector' => '#searcher',
-                    'linkSelector' => '.run-pjax',
-                ]); ?>
 
                 <?= ListView::widget([
                     'dataProvider' => $listResume,
@@ -161,21 +186,24 @@ $this->registerJs($script);
                         'tag' => 'p'
                     ],
 
+                    'pager' => [
+                        // 'firstPageLabel' => 'Первая',
+                        'firstPageCssClass' => false,
+                        'lastPageCssClass' => false,
+                        // 'lastPageLabel' => 'Последняя',
+                        'nextPageLabel' => 'Далее <img class="ml8" src="/images/mini-right-arrow.svg" alt="arrow">',
+                        'prevPageLabel' => '<img class="mr8" src="/images/mini-left-arrow.svg" alt="arrow"> Назад',        
+                        'maxButtonCount' => 5,
+                        'prevPageCssClass' => 'page-link-prev',
+                        'nextPageCssClass' => 'page-link-next',
+                        'options' => [
+                            'class' => 'dor-pagination mb128',
+                        ],
+                    ],
+
                 ]); ?>
                 <?php Pjax::end(); ?>
 
-                <ul class="dor-pagination mb128">
-                    <li class="page-link-prev"><a href="#"><img class="mr8" src="/images/mini-left-arrow.svg" alt="arrow"> Назад</a>
-                    </li>
-                    <li><a href="#">1</a></li>
-                    <li><a class="grey" href="#">...</a></li>
-                    <li class="active"><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li><a class="grey" href="#">...</a></li>
-                    <li><a href="#">10</a></li>
-                    <li class="page-link-next"><a href="#">Далее <img class="ml8" src="/images/mini-right-arrow.svg" alt="arrow"></a>
-                    </li>
-                </ul>
             </div>
             <div class="col-lg-3 desctop-992-pl-16 d-flex flex-column vakancy-page-filter-block vakancy-page-filter-block-dnone">
                 <div class="vakancy-page-filter-block__row mobile-flex-992 mb24 d-flex justify-content-between align-items-center">
@@ -183,61 +211,21 @@ $this->registerJs($script);
                     <img class="cursor-p" src="/images/big-cancel.svg" alt="cancel">
                 </div>
                 <div class="signin-modal__switch-btns-wrap resume-list__switch-btns-wrap mb16">
-                    <!-- <a href="#" class="signin-modal__switch-btn ">Мужчины</a> -->
-                    
                     <?= Html::a("Все", 
                         Url::to(['site/index']), 
                         ['class' => 'signin-modal__switch-btn active run-pjax', 'data-pjax' => 1]
                     ) ?>
                     <?= Html::a("Мужчины", Url::to(['/', 'gender' => 1]), ['class' => 'signin-modal__switch-btn data run-pjax', 'data-pjax' => 1]) ?>
                     <?= Html::a("Женщины", Url::to(['/', 'gender' => 2]), ['class' => 'signin-modal__switch-btn data run-pjax', 'data-pjax' => 1]) ?>
-                    <!-- <a href="#" class="signin-modal__switch-btn ">Женщины</a> -->
                 </div>
-                
+                <!-- Форма фильтрации -->
                 <?= $this->render('_search', ['model' => $searchModel]) ?>
-                <!-- filters -->
-                
-                
-                
-                
-                <div class="vakancy-page-filter-block__row mb24">
-                    <div class="paragraph cadet-blue">График работы</div>
-                    <div class="profile-info">
-                        <div class="form-check d-flex">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck10">
-                            <label class="form-check-label" for="exampleCheck10"></label>
-                            <label for="exampleCheck10" class="profile-info__check-text">Полный день</label>
-                        </div>
-                        <div class="form-check d-flex">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck11">
-                            <label class="form-check-label" for="exampleCheck11"></label>
-                            <label for="exampleCheck11" class="profile-info__check-text">Сменный график</label>
-                        </div>
-                        <div class="form-check d-flex">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck12">
-                            <label class="form-check-label" for="exampleCheck12"></label>
-                            <label for="exampleCheck12" class="profile-info__check-text">Вахтовый метод</label>
-                        </div>
-                        <div class="form-check d-flex">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck13">
-                            <label class="form-check-label" for="exampleCheck13"></label>
-                            <label for="exampleCheck13" class="profile-info__check-text">Гибкий график</label>
-                        </div>
-                        <div class="form-check d-flex">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck14">
-                            <label class="form-check-label" for="exampleCheck14"></label>
-                            <label for="exampleCheck14" class="profile-info__check-text">Удалённая
-                                работа</label>
-                        </div>
-                    </div>
-                </div>
+                <!-- Форма фильтрации -->
                 <div class="vakancy-page-filter-block__row vakancy-page-filter-block__show-vakancy-btns mb24 d-flex flex-wrap align-items-center mobile-jus-cont-center">
                     <a class="link-orange-btn orange-btn mr24 mobile-mb12" href="#">Показать <span>1 230</span>
                         вакансии</a>
                     <a href="#">Сбросить все</a>
                 </div>
-                
-                <!-- filters -->
             </div>
         </div>
     </div>
