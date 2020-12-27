@@ -2,6 +2,8 @@
 
 /* @var $this yii\web\View */
 
+use app\models\enums\Cities;
+use app\models\enums\Specialist;
 use yii\helpers\Html;
 
 
@@ -12,14 +14,18 @@ $this->title = 'Резюме ' . $resume->specialization;
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="mt8 mb32"><a href="/"><img src="/images/blue-left-arrow.svg" alt="arrow"> Резюме в
-                        Кемерово</a>
+                    <div class="mt8 mb32">
+                        <a href="/?city=<?= $resume->city ?>">
+                            <img src="/images/blue-left-arrow.svg" alt="arrow"> 
+                            Резюме в <?= Cities::getLabel($resume->city) ?>
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-4 col-md-5 mobile-mb32">
-                    <div class="profile-foto resume-profile-foto"><img src="<?= $resume->image ?>" alt="<?= $resume->specialization ?>">
+                    <div class="profile-foto resume-profile-foto"><img src="<?= Yii::getAlias('@web/images/faker-images/') . $resume->image ?>" 
+                    alt="<?= Specialist::getLabel($resume->specialization) ?>">
                     </div>
                 </div>
                 <div class="col-lg-8 col-md-7">

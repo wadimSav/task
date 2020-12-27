@@ -3,6 +3,7 @@
 use app\models\enums\Cities;
 use app\models\enums\Employment;
 use app\models\enums\ExpSearchInd;
+use app\models\enums\Shedule;
 use app\models\enums\Specialist;
 use yii\widgets\ActiveForm;
 
@@ -91,7 +92,6 @@ use yii\widgets\ActiveForm;
         ->checkboxList(
             Employment::listData(),
         ['item' => function($index, $label, $name, $checked, $value){
-            // ($index == 0) ? $checked = 'checked' : '' ;
             $answer = '<div class="form-check d-flex">';
             $answer .= '<input type="checkbox" name="' . $name . '" class="form-check-input" id="employmentCheck'. ++$index .'" value="' . $value . '"> ';
             $answer .= '<label class="form-check-label" for="employmentCheck'. $index .'"></label>';
@@ -102,5 +102,22 @@ use yii\widgets\ActiveForm;
     </div>
 </div>
 
+<div class="vakancy-page-filter-block__row mb24">
+    <div class="paragraph cadet-blue">График работы</div>
+    <div class="profile-info">
+        <?= $form->field($model, 'schedule')
+            ->checkboxList(
+                Shedule::listData(),
+            ['item' => function($index, $label, $name, $checked, $value){
+                $answer = '<div class="form-check d-flex">';
+                $answer .= '<input type="checkbox" name="' . $name . '" class="form-check-input" id="scheduleCheck'. ++$index .'" value="' . $value . '"> ';
+                $answer .= '<label class="form-check-label" for="scheduleCheck'. $index .'"></label>';
+                $answer .= '<label class="profile-info__check-text" for="scheduleCheck'. $index .'">' . $label . '</label>';
+                $answer .= '</div>';
+                return $answer;
+            }])->label(false) ?>
+        
+    </div>
+</div>
 
 <?php ActiveForm::end(); ?>
