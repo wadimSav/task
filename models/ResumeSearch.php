@@ -5,6 +5,7 @@ namespace app\models;
 use DateTime;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\db\Query;
 use yii\helpers\VarDumper;
 
 class ResumeSearch extends ResumeForm
@@ -72,9 +73,20 @@ class ResumeSearch extends ResumeForm
         if($searchParam['experience'] == 1){
             $query->andFilterWhere(['experience' => 0]);
         } elseif($searchParam['experience'] == 2){
-            // $year = $query->exp[0]->year;
-            // VarDumper::dump( $year, 10,true);die;
-            $query->andFilterWhere(['experience.year' => 0]);
+            $query->andFilterWhere(['between', '(experience.year_end_work) - (experience.year)', 1, 3]);
+        } elseif($searchParam['experience'] == 3){
+            $query->andFilterWhere(['between', '(experience.year_end_work) - (experience.year)', 3, 6]);
+        } elseif($searchParam['experience'] == 4){
+            $query->andFilterWhere(['>', '(experience.year_end_work) - (experience.year)', 6]);
+        }
+
+        if(isset($searchParam['employment'])){
+            $numArray = str_split($searchParam['employment'], 1);
+            $query->andFilterWhere(['or like', 'employment', $numArray]);
+        }
+        if(isset($searchParam['schedule'])){
+            $numArray = str_split($searchParam['schedule'], 1);
+            $query->andFilterWhere(['or like', 'schedule', $numArray]);
         }
             // ->orderBy(['desired_salary' => SORT_DESC])
             
