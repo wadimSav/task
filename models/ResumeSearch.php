@@ -2,11 +2,11 @@
 
 namespace app\models;
 
+
 use DateTime;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use yii\db\Query;
-use yii\helpers\VarDumper;
+
 
 class ResumeSearch extends ResumeForm
 {
@@ -27,6 +27,8 @@ class ResumeSearch extends ResumeForm
             'experience',
             ], 'integer'],
 
+            [['salary_asc', 'salary_desc'], 'integer'],
+
             [['ageto', 'agefrom'], 'in', 'range' => range(20, 60), 
             'message' => 'Значение должно быть от 20 до 60']
         ];
@@ -38,6 +40,12 @@ class ResumeSearch extends ResumeForm
         return Model::scenarios();
     }
 
+    /**
+     * Selects from the database by the passed parameters
+     * 
+     * @param mixed Array $params
+     * @return ActiveDataProvider
+     */
     public function search($params)
     {
         $query = ResumeForm::find()->joinWith('exp');
@@ -52,6 +60,11 @@ class ResumeSearch extends ResumeForm
         $query->andFilterWhere(['city' => $searchParam['city']]);
         $query->andFilterWhere(['<=', 'desired_salary', $searchParam['desired_salary']]);
         $query->andFilterWhere(['specialization' => $searchParam['specialization']]);
+        if (array_key_exists('salary_asc', $searchParam)) {
+            $query->addOrderBy('desired_salary ASC');
+        } elseif (array_key_exists('salary_desc', $searchParam)) {
+            $query->addOrderBy('desired_salary DESC');
+        }
 
         if (array_key_exists('agefrom', $searchParam) && !array_key_exists('ageto', $searchParam)) {
             $date = new DateTime(-$searchParam['agefrom'] . ' years');
@@ -88,7 +101,6 @@ class ResumeSearch extends ResumeForm
             $numArray = str_split($searchParam['schedule'], 1);
             $query->andFilterWhere(['or like', 'schedule', $numArray]);
         }
-            // ->orderBy(['desired_salary' => SORT_DESC])
             
         return $listResume;
     }
