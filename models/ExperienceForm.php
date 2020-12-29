@@ -5,9 +5,7 @@ namespace app\models;
 use Yii;
 use yii\db\ActiveRecord;
 
-/**
- * ExperienceForm is the model behind the resume form.
- */
+
 class ExperienceForm extends ActiveRecord
 {
 
@@ -25,7 +23,6 @@ class ExperienceForm extends ActiveRecord
     public function rules()
     {
         return [
-            // required fields
             [['month', 'year',  'organization', 'exp_spec', 'month_end_work', 'year_end_work'], 'required',
               'message' => 'Поле обязательно к заполнению'],
 
@@ -33,8 +30,6 @@ class ExperienceForm extends ActiveRecord
 
             [['resume_id', 'year', 'year_end_work', 'month_end_work', 'month'], 'integer', 'message' => 'Значение должно быть числом'],
 
-            // [['year', 'year_end_work'], 'integer'],
-            
             [['until_now_work'], 'boolean'],
             [['until_now_work'], 'default', 'value' => false],
 
@@ -45,6 +40,9 @@ class ExperienceForm extends ActiveRecord
         ];
     }
 
+    /**
+     * One-to-one relationship with resume table
+     */
     public function getResume()
     {
        return $this->hasOne(ResumeForm::className(), ['id' => 'resume_id']);            
