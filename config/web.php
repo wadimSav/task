@@ -9,11 +9,16 @@ $config = [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'layout' => 'resume',
+    'sourceLanguage' => 'ru_RU',
+    'language' => 'ru_RU',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'inflection' => [
+            'class' => 'wapmorgan\yii2inflection\Inflection',
+        ],
         'formatter' => [
             'locale' => 'ru-RU',
         ],
