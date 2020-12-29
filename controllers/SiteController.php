@@ -17,23 +17,22 @@ class SiteController extends Controller
     /**
      * Displays homepage.
      *
+     * Pass the filtering model and data provider for the homepage
      */
     public function actionIndex()
     {
-        
         $searchModel = new ResumeSearch();
         $listResume = $searchModel->search(Yii::$app->request->get());
-        // VarDumper::dump(Yii::$app->request->get(), 5, true);
         return $this->render('index', [
             'listResume' => $listResume,
             'searchModel' => $searchModel,
         ]);
-        
     }
 
     /**
      * Delete resume and related entries.
-     *
+     * 
+     * @param int $id resume id
      */
     public function actionDelete($id)
     {
@@ -44,8 +43,10 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays detail page.
-     *
+     * Displays detail resume page.
+     * 
+     * @param int $id resume id
+     * 
      */
     public function actionDetail($id)
     {
@@ -85,27 +86,14 @@ class SiteController extends Controller
         $model_exp = new ExperienceForm();
 
         if ($model->load(Yii::$app->request->post()) && $model_exp->load(Yii::$app->request->post())) {
-
             $model->file = WebUploadedFile::getInstance($model, 'file');
-
-            if ($model->validate('file')) {
-                $model->file->saveAs('images/' . $model->file->name);
-                $model->image = $model->file->name;
-            }
-
-            if(count($model->employment[0]) > 1){
-                $model->employment = implode(',' ,$model->employment[0]);
-            } else {
-                $model->employment = $model->employment[0];
-            }
-
-            if(count($model->schedule[0]) > 1){
-                $model->schedule = implode(',' ,$model->schedule[0]);
-            } else {
-                $model->schedule = $model->schedule[0];
-            }
-
+            $model->image = $model->file->name;
+            $model->birthday = Yii::$app->formatter->asDatetime($model->birthday, 'php:Y-m-d H:i:s');
+            $model->employment = implode('' ,$model->employment);
+            $model->schedule = implode('' ,$model->schedule);
+            
             if ($model->save() && $model_exp->load(Yii::$app->request->post())) {
+                $model->upload();
                 $model_exp->resume_id = $model->id;
                 $model_exp->year = (int) $model_exp->year;
                 $model_exp->year_end_work = (int) $model_exp->year_end_work;
@@ -119,12 +107,13 @@ class SiteController extends Controller
         return $this->render('createResume', [
             'model' => $model,
             'model_exp' => $model_exp,
-        ]);
-    }
+            ]);
+        }
 
     /**
      * Displays update page
      * 
+     * @param int $id resume id
      */
     public function actionEdit($id)
     {
@@ -138,31 +127,20 @@ class SiteController extends Controller
     /**
      * Updates resume data
      * 
+     * @param int $id resume id
      */
     public function actionUpdate($id)
     {
         $oneResume = ResumeForm::findOne($id);
         if ($oneResume->load(Yii::$app->request->post())) {
             $oneResume->file = WebUploadedFile::getInstance($oneResume, 'file');
-
-            if ($oneResume->validate('file')) {
-                $oneResume->file->saveAs('images/' . $oneResume->file->name);
-                $oneResume->image = Yii::getAlias('@web/images/') . $oneResume->file->name;
-            }
-
-            if(count($oneResume->employment[0]) > 1){
-                $oneResume->employment = implode(',' ,$oneResume->employment[0]);
-            } else {
-                $oneResume->employment = $oneResume->employment[0];
-            }
-
-            if(count($oneResume->schedule[0]) > 1){
-                $oneResume->schedule = implode(',' ,$oneResume->schedule[0]);
-            } else {
-                $oneResume->schedule = $oneResume->schedule[0];
-            }
-
+            $oneResume->image = $oneResume->file->name;
+            $oneResume->birthday = Yii::$app->formatter->asDatetime($oneResume->birthday, 'php:Y-m-d H:i:s');
+            $oneResume->employment = implode('' ,$oneResume->employment);
+            $oneResume->schedule = implode('' ,$oneResume->schedule);
             if ($oneResume->save()) {
+                $oneResume->upload();
+                Yii::$app->session->setFlash('success', 'Резюме изменено успешно!');
                 return $this->redirect(['myresume']);
             }
         }
