@@ -12,7 +12,6 @@ use yii\widgets\ActiveForm;
 ?>
 
 <?php $form = ActiveForm::begin([
-    // 'action' => ['/'],
     'method' => 'get',
     'id' => 'searcher'
 ]); ?>
