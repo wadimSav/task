@@ -38,6 +38,21 @@ $this->title = 'Мои резюме';
                                     'emptyTextOptions' => [
                                         'tag' => 'p'
                                     ],
+
+                                    'pager' => [
+                                        // 'firstPageLabel' => 'Первая',
+                                        'firstPageCssClass' => false,
+                                        'lastPageCssClass' => false,
+                                        // 'lastPageLabel' => 'Последняя',
+                                        'nextPageLabel' => 'Далее <img class="ml8" src="/images/mini-right-arrow.svg" alt="arrow">',
+                                        'prevPageLabel' => '<img class="mr8" src="/images/mini-left-arrow.svg" alt="arrow"> Назад',        
+                                        'maxButtonCount' => 5,
+                                        'prevPageCssClass' => 'page-link-prev',
+                                        'nextPageCssClass' => 'page-link-next',
+                                        'options' => [
+                                            'class' => 'dor-pagination mb128',
+                                        ],
+                                    ],
                                 ]); ?>
                                 
                             </div>
