@@ -35,18 +35,18 @@ $(document).ready(function() {
     })
 
     $('#salary').change(function(evt) {
-        const url = new URL(window.location);  // == window.location.href
+        const url = new URL(window.location);
         url.searchParams.set('desired_salary', evt.target.value); 
-        history.pushState(null, null, url);    // == url.href
+        history.pushState(null, null, url);
         $.pjax({
             url: url,
             container: '#p0'
         });
     })
     $('.field-spec-search>.nselect>.nselect__inner>ul>li>span').click(function(evt) {
-        const url = new URL(window.location);  // == window.location.href
+        const url = new URL(window.location);
         url.searchParams.set('specialization', evt.target.parentElement.dataset.val); 
-        history.pushState(null, null, url);    // == url.href
+        history.pushState(null, null, url);
         $.pjax({
             url: url,
             container: '#p0'
@@ -54,62 +54,62 @@ $(document).ready(function() {
     })
 
     $('.field-city-search>.nselect>.nselect__inner>ul>li>span').click(function(evt) {
-        const url = new URL(window.location);  // == window.location.href
+        const url = new URL(window.location);
         url.searchParams.set('city', evt.target.parentElement.dataset.val); 
-        history.pushState(null, null, url);    // == url.href
+        history.pushState(null, null, url);
         $.pjax({
             url: url,
             container: '#p0'
         });
     })
     $('#agefrom').change(function(evt) {
-        const url = new URL(window.location);  // == window.location.href
+        const url = new URL(window.location);
         url.searchParams.set('agefrom', evt.target.value); 
-        history.pushState(null, null, url);    // == url.href
+        history.pushState(null, null, url);
         $.pjax({
             url: url,
             container: '#p0'
         });
     })
     $('#ageto').change(function(evt) {
-        const url = new URL(window.location);  // == window.location.href
+        const url = new URL(window.location);
         url.searchParams.set('ageto', evt.target.value); 
-        history.pushState(null, null, url);    // == url.href
+        history.pushState(null, null, url);
         $.pjax({
             url: url,
             container: '#p0'
         });
     })
     $('input[type="radio"]').click(function(evt) {
-        const url = new URL(window.location);  // == window.location.href
+        const url = new URL(window.location);
         url.searchParams.set('experience', $('input[type="radio"]:checked').val()); 
-        history.pushState(null, null, url);    // == url.href
+        history.pushState(null, null, url);
         $.pjax({
             url: url,
             container: '#p0'
         });
     })
     $('#resumesearch-employment>.form-check>input:checkbox').click(function(evt) {
-        const url = new URL(window.location);  // == window.location.href
+        const url = new URL(window.location);
         let empParam = '';
         $('#resumesearch-employment>.form-check>input:checkbox:checked').each(function(){
             empParam += $(this).val();
         })
         url.searchParams.set('employment', empParam); 
-        history.pushState(null, null, url);    // == url.href
+        history.pushState(null, null, url);
         $.pjax({
             url: url,
             container: '#p0'
         });
     })
     $('#resumesearch-schedule>.form-check>input:checkbox').click(function(evt) {
-        const url = new URL(window.location);  // == window.location.href
+        const url = new URL(window.location);
         let empParam = '';
         $('#resumesearch-schedule>.form-check>input:checkbox:checked').each(function(){
             empParam += $(this).val();
         })
         url.searchParams.set('schedule', empParam); 
-        history.pushState(null, null, url);    // == url.href
+        history.pushState(null, null, url);
         $.pjax({
             url: url,
             container: '#p0'
@@ -161,6 +161,8 @@ $this->registerJs($script);
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 
                            <!-- sort links -->
+                            <?= Html::a("По увеличению зарплаты", Url::to(['/', 'salary_asc' => 1]), ['class' => 'dropdown-item run-pjax', 'data-pjax' => 1]) ?>
+                            <?= Html::a("По уменьшению зарплаты", Url::to(['/', 'salary_desc' => 2]), ['class' => 'dropdown-item run-pjax', 'data-pjax' => 1]) ?>
                                 
                             </div>
                         </div>

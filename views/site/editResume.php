@@ -2,9 +2,15 @@
 
 /* @var $this yii\web\View */
 
+use app\models\enums\Cities;
+use app\models\enums\Employment;
+use app\models\enums\Experience;
+use app\models\enums\Gender;
+use app\models\enums\Monts;
+use app\models\enums\Shedule;
+use app\models\enums\Specialist;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-use yii\helpers\Url;
 
 $this->title = 'Редактирование резюме';
 ?>
@@ -32,7 +38,10 @@ $this->title = 'Редактирование резюме';
                         </div>
                         <div class="col-lg-3 col-md-4 col-11">
                             <div class="profile-foto-upload mb8">
-                                <img src="<?= $model->image ?>" alt="foto">
+                                
+                                <img src="<?= Yii::getAlias('@web/images/faker-images/') . $model->image ?>" 
+                                     alt="<?= $model->surname . ' ' . $model->name . ' ' . 
+                                            $model->patronymic . ', ' . Specialist::getLabel($model->specialization) ?>">
                             </div>
                             <label class="custom-file-upload">
 
@@ -87,7 +96,8 @@ $this->title = 'Редактирование резюме';
                             <div class="datepicker-wrap input-group date">
 
                                 <?= $form->field($model, 'birthday', ['enableLabel' => false])
-                                    ->textInput(['class' => 'dor-input dpicker datepicker-input']) ?>
+                                    ->textInput(['class' => 'dor-input dpicker datepicker-input', 
+                                                 'value' => Yii::$app->formatter->asDate($model->birthday, 'php:d.m.Y')]) ?>
 
                                 <img src="/images/mdi_calendar_today.svg" alt="">
                             </div>
@@ -102,13 +112,12 @@ $this->title = 'Редактирование резюме';
                             <ul class="card-ul-radio profile-radio-list">
                                 
                                 <?= $form->field($model, 'gender', ['enableLabel' => false])
-                                    ->radioList([
-                                        'Мужской' => 'Мужской',
-                                        'Женский' => 'Женский'
-                                    ], ['item' => function($index = 0, $label, $name, $checked, $value){
+                                    ->radioList(
+                                        Gender::listData(),
+                                    ['item' => function($index, $label, $name, $checked, $value){
                                         ($checked == '1') ? $checked = 'checked="' . $checked . '"' : $checked = '' ;
                                         $answer = '<li><input type="radio" id="test'. ++$index .'" name="'. $name .'" ' .$checked.' value="'. $value .'"> ';
-                                        $answer .= ($index == 1) ? '<label for="test'. $index .'">Мужской</label>' : '<label for="test'. $index .'">Женский</label></li>';
+                                        $answer .= '<label for="test'. $index .'">' . $label . '</label></li>';
                                         return $answer;
                                     }]) ?>
                                 
@@ -124,15 +133,7 @@ $this->title = 'Редактирование резюме';
                             <div class="citizenship-select">
 
                                 <?= $form->field($model, 'city', ['enableLabel' => false])
-                                    ->dropDownList([
-                                        'Москва' => 'Москва',
-                                        'Самара' => 'Самара',
-                                        'Волгоград' => 'Волгоград',
-                                        'Екатеринбург' => 'Екатеринбург',
-                                        'Тюмень' => 'Тюмень',
-                                        'Сочи' => 'Сочи',
-                                        'Краснодар' => 'Краснодар',
-                                    ], ['class' => 'nselect-2']) ?>
+                                    ->dropDownList(Cities::listData(), ['class' => 'nselect-2']) ?>
 
                             </div>
                         </div>
@@ -188,34 +189,7 @@ $this->title = 'Редактирование резюме';
                             <div class="citizenship-select">
 
                                 <?= $form->field($model, 'specialization', ['enableLabel' => false])
-                                    ->dropDownList([
-                                        'Администратор баз данных' => 'Администратор баз данных',
-                                        'Аналитик' => 'Аналитик',
-                                        'Арт-директор' => 'Арт-директор',
-                                        'Инженер' => 'Инженер',
-                                        'Компьютерная безопасность' => 'Компьютерная безопасность',
-                                        'Контент' => 'Контент',
-                                        'Маркетинг' => 'Маркетинг',
-                                        'Мультимедиа' => 'Мультимедиа',
-                                        'Оптимизация сайта (SEO)' => 'Оптимизация сайта (SEO)',
-                                        'Передача данных и доступ в интернет' => 'Передача данных и доступ в интернет',
-                                        'Программирование, Разработка' => 'Программирование, Разработка',
-                                        'Продажи' => 'Продажи',
-                                        'Продюсер' => 'Продюсер',
-                                        'Развитие бизнеса' => 'Развитие бизнеса',
-                                        'Системный администратор' => 'Системный администратор',
-                                        'Системы управления предприятием (ERP)' => 'Системы управления предприятием (ERP)',
-                                        'Сотовые, Беспроводные технологии' => 'Сотовые, Беспроводные технологии',
-                                        'Стартапы' => 'Стартапы',
-                                        'Телекоммуникации' => 'Телекоммуникации',
-                                        'Тестирование' => 'Тестирование',
-                                        'Технический писатель' => 'Технический писатель',
-                                        'Управление проектами' => 'Управление проектами',
-                                        'Электронная коммерция' => 'Электронная коммерция',
-                                        'CRM системы' => 'CRM системы',
-                                        'Web инженер' => 'Web инженер',
-                                        'Web мастер' => 'Web мастер'
-                                    ], ['class' => 'nselect-1']) ?>
+                                    ->dropDownList(Specialist::listData(), ['class' => 'nselect-1']) ?>
                                     
                             </div>
                         </div>
@@ -242,13 +216,9 @@ $this->title = 'Редактирование резюме';
                             <div class="profile-info">
 
                                 <?= $form->field($model, 'employment', ['enableLabel' => false])
-                                    ->checkboxList([
-                                        'Полная занятость' => 'Полная занятость',
-                                        'Частичная занятость' => 'Частичная занятость',
-                                        'Проектная/Временная работа' => 'Проектная/Временная работа',
-                                        'Волонтёрство' => 'Волонтёрство',
-                                        'Стажировка' => 'Стажировка'
-                                    ],['item' => function($index, $label, $name, $checked, $value){
+                                    ->checkboxList(
+                                        Employment::listData(),
+                                    ['item' => function($index, $label, $name, $checked, $value){
                                         ($checked == '1') ? $checked = 'checked="' . $checked . '"' : $checked = '' ;
                                         $answer = '<div class="form-check d-flex">';
                                         $answer .= '<input type="checkbox" name="' . $name . '" class="form-check-input" id="employmentCheck'. ++$index .'" value="' . $value . '" ' . $checked . '> ';
@@ -269,13 +239,9 @@ $this->title = 'Редактирование резюме';
                             <div class="profile-info">
 
                                 <?= $form->field($model, 'schedule', ['enableLabel' => false])
-                                    ->checkboxList([
-                                        'Полный день' => 'Полный день',
-                                        'Сменный график' => 'Сменный график',
-                                        'Гибкий график' => 'Гибкий график',
-                                        'Удалённая работа' => 'Удалённая работа',
-                                        'Вахтовый метод' => 'Вахтовый метод'
-                                    ],['item' => function($index, $label, $name, $checked, $value){
+                                    ->checkboxList(
+                                        Shedule::listData(),
+                                    ['item' => function($index, $label, $name, $checked, $value){
                                         ($checked == '1') ? $checked = 'checked="' . $checked . '"' : $checked = '' ;
                                         $answer = '<div class="form-check d-flex">';
                                         $answer .= '<input type="checkbox" name="' . $name . '" class="form-check-input" id="scheduleCheck'. ++$index .'" value="' . $value . '" ' . $checked . '> ';
@@ -302,11 +268,11 @@ $this->title = 'Редактирование резюме';
                             <ul class="card-ul-radio profile-radio-list">
 
                                 <?= $form->field($model, 'experience', ['enableLabel' => false])
-                                    ->radioList([
-                                        'Нет опыта работы' => 'Нет опыта работы',
-                                        'Есть опыт работы' => 'Есть опыт работы'
-                                    ], ['item' => function($index, $label, $name, $checked, $value){
-                                        $answer = '<li><input type="radio" id="test'. ++$index . 'experience" name="'. $name .'" checked="' .$checked.'" value="'. $value .'"> ';
+                                    ->radioList(
+                                        Experience::listData(),
+                                    ['item' => function($index, $label, $name, $checked, $value){
+                                        ($checked == '1') ? $checked = 'checked="' . $checked . '"' : $checked = '' ;
+                                        $answer = '<li><input type="radio" id="test'. ++$index . 'experience" name="'. $name .'"' .$checked. ' value="'. $value .'"> ';
                                         $answer .= '<label for="test'. $index . 'experience">' . $label . '</label></li>';
                                         return $answer;
                                     }]) ?>
@@ -319,6 +285,7 @@ $this->title = 'Редактирование резюме';
 
                     <div class="link-delete">
     <!-- начало работы -->
+<?php if($model->experience != 0){ ?>
     <div class="row mb24">
     <div class="col-lg-2 col-md-3 dflex-acenter">
         <div class="paragraph">Начало работы</div>
@@ -328,25 +295,10 @@ $this->title = 'Редактирование резюме';
             <div class="citizenship-select w100 mr16">
 
             <?= $form->field($model->exp[0], 'month', ['enableLabel' => false])
-                ->dropDownList([
-                    'Январь' => 'Январь',
-                    'Февраль' => 'Февраль',
-                    'Март' => 'Март',
-                    'Апрель' => 'Апрель',
-                    'Май' => 'Май',
-                    'Июнь' => 'Июнь',
-                    'Июль' => 'Июль',
-                    'Август' => 'Август',
-                    'Сентябрь' => 'Сентябрь',
-                    'Октябрь' => 'Октябрь',
-                    'Ноябрь' => 'Ноябрь',
-                    'Декабрь' => 'Декабрь',
-
-                ], ['class' => 'nselect-1']) ?>
+                ->dropDownList(Monts::listData(), ['class' => 'nselect-1']) ?>
     
             </div>
             <div class="citizenship-select w100">
-                <!-- <input name="year" placeholder="2006" type="text" class="dor-input w100" required> -->
                 <?= $form->field($model->exp[0], 'year', ['enableLabel' => false])
                         ->widget(\yii\widgets\MaskedInput::className(), ['mask' => '9{4}'])
                         ->textInput(['class' => 'dor-input w100'])
@@ -365,21 +317,7 @@ $this->title = 'Редактирование резюме';
             <div class="citizenship-select w100 mr16">
 
             <?= $form->field($model->exp[0], 'month_end_work', ['enableLabel' => false])
-                ->dropDownList([
-                    'Январь' => 'Январь',
-                    'Февраль' => 'Февраль',
-                    'Март' => 'Март',
-                    'Апрель' => 'Апрель',
-                    'Май' => 'Май',
-                    'Июнь' => 'Июнь',
-                    'Июль' => 'Июль',
-                    'Август' => 'Август',
-                    'Сентябрь' => 'Сентябрь',
-                    'Октябрь' => 'Октябрь',
-                    'Ноябрь' => 'Ноябрь',
-                    'Декабрь' => 'Декабрь',
-
-                ], ['class' => 'nselect-1']) ?>
+                ->dropDownList(Monts::listData(), ['class' => 'nselect-1']) ?>
     
             </div>
             <div class="citizenship-select w100">
@@ -429,9 +367,11 @@ $this->title = 'Редактирование резюме';
         <div class="paragraph">Должность</div>
     </div>
     <div class="col-lg-3 col-md-4 col-11">
-
-        <?= $form->field($model->exp[0], 'exp_spec', ['enableLabel' => false])
-                ->textInput(['class' => 'dor-input w100'])?>
+        <div class="citizenship-select">
+        
+            <?= $form->field($model->exp[0], 'exp_spec', ['enableLabel' => false])
+                ->dropDownList(Specialist::listData(), ['class' => 'nselect-1 dor-input w100']) ?>
+        </div>
     </div>
     </div>
     <div class="row mb16">
@@ -455,6 +395,7 @@ $this->title = 'Редактирование резюме';
             <div class="devide-border"></div>
         </div>
     </div>
+    <?php } ?>
 </div>
 
                     

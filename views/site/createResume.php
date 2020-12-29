@@ -37,8 +37,7 @@ $this->title = 'Новое резюме';
                         </div>
                         <div class="col-lg-3 col-md-4 col-11">
                             <div class="profile-foto-upload mb8">
-                                <!-- <img src="/images/profile-foto.jpg" alt="foto"> -->
-                                <?php //Html::img(Yii::$app->urlManager->createUrl($this->imagePath)) ?>
+                                <img src="<?= Yii::getAlias('@web') . '/images/profile-foto.jpg' ?>" alt="foto">
                             </div>
                             <label class="custom-file-upload">
 
@@ -46,7 +45,7 @@ $this->title = 'Новое резюме';
                                     ->textInput(['type' => 'hidden']) ?>
                                 <?= $form->field($model, 'file', ['enableLabel' => false])->fileInput() ?>
 
-                                Изменить фото
+                                Загрузить фото
                             </label>
                         </div>
                     </div>
@@ -242,7 +241,6 @@ $this->title = 'Новое резюме';
                                     ->checkboxList(
                                         Shedule::listData(),
                                     ['item' => function($index, $label, $name, $checked, $value){
-                                        // ($index == 0) ? $checked = 'checked' : '' ;
                                         $answer = '<div class="form-check d-flex">';
                                         $answer .= '<input type="checkbox" name="' . $name . '" class="form-check-input" id="scheduleCheck'. ++$index .'" value="' . $value . '"> ';
                                         $answer .= '<label class="form-check-label" for="scheduleCheck'. $index .'"></label>';
@@ -300,7 +298,6 @@ $this->title = 'Новое резюме';
     
             </div>
             <div class="citizenship-select w100">
-                <!-- <input name="year" placeholder="2006" type="text" class="dor-input w100" required> -->
                 <?= $form->field($model_exp, 'year', ['enableLabel' => false])
                         ->widget(\yii\widgets\MaskedInput::className(), ['mask' => '9{4}'])
                         ->textInput(['class' => 'dor-input w100'])
@@ -325,7 +322,6 @@ $this->title = 'Новое резюме';
     
             </div>
             <div class="citizenship-select w100">
-                <!-- <input name="year_end_work" placeholder="2006" type="text" class="dor-input w100" required> -->
                      <?= $form->field($model_exp, 'year_end_work', ['enableLabel' => false])
                         ->widget(\yii\widgets\MaskedInput::className(), ['mask' => '9{4}'])
                         ->textInput(['class' => 'dor-input w100'])
@@ -343,7 +339,7 @@ $this->title = 'Новое резюме';
 
             <?= $form->field($model_exp, 'until_now_work', ['enableLabel' => false])
                         ->checkboxList([
-                            'По настоящее время' => 'По настоящее время'
+                            1 => 'По настоящее время'
                         ],['item' => function($index, $label, $name, $checked, $value){
                             $answer = '<input type="checkbox" name="' . $name . '" class="form-check-input" id="untilCheck'. ++$index .'" value="' . $value . '"> ';
                             $answer .= '<label class="form-check-label" for="untilCheck'. $index .'"></label>';
@@ -360,7 +356,7 @@ $this->title = 'Новое резюме';
         <div class="paragraph">Организация</div>
     </div>
     <div class="col-lg-3 col-md-4 col-11">
-
+        
         <?= $form->field($model_exp, 'organization', ['enableLabel' => false])
                 ->textInput(['class' => 'dor-input w100'])?>
 
@@ -372,8 +368,15 @@ $this->title = 'Новое резюме';
     </div>
     <div class="col-lg-3 col-md-4 col-11">
 
+        <div class="citizenship-select w100 mr16">
+
         <?= $form->field($model_exp, 'exp_spec', ['enableLabel' => false])
-                ->textInput(['class' => 'dor-input w100'])?>
+            ->dropDownList(
+                Specialist::listData(), 
+                ['class' => 'nselect-1']) ?>
+
+        </div>
+        
     </div>
     </div>
     <div class="row mb16">
