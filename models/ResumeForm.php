@@ -6,13 +6,10 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
-/**
- * ResumeForm is the model behind the resume form.
- */
 class ResumeForm extends ActiveRecord
 {
 
-    public $file; 
+    public $file;
 
     /**
      * @inheritdoc
@@ -65,16 +62,31 @@ class ResumeForm extends ActiveRecord
 
 
     /**
-     * Связь с таблицей experience
+     * Relationship with a table experience
      */
     public function getExp()
     {
        return $this->hasMany(ExperienceForm::className(), ['resume_id' => 'id']);            
     }
 
+    /**
+     * Loading an image
+     * 
+     * @return bool
+     */
+    public function upload()
+    {
+        if($this->validate('file')){
+            $this->file->saveAs('images/faker-images/' . $this->file->name);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     /**
-     * Установка времени создания и обновления записи
+     * Setting the time to create and update a record
      */
     public function behaviors()
     {
@@ -90,6 +102,13 @@ class ResumeForm extends ActiveRecord
         ];
     }
 
+    /**
+     * Converts the first letter of a word to uppercase
+     * 
+     * @param string $string
+     * @param string $e charset
+     * @return string
+     */
     public function my_ucfirst($string, $e ='utf-8') { 
         if (function_exists('mb_strtoupper') && function_exists('mb_substr') && !empty($string)) { 
             $string = mb_strtolower($string, $e); 
@@ -103,6 +122,13 @@ class ResumeForm extends ActiveRecord
         return $string; 
     }
 
+    /**
+     * Outputs correct words for numeric values ​​like (1 year, 2 years, 5 years)
+     * 
+     * @param int $num
+     * @param array $words
+     * @return string
+     */
     public function num2word($num, $words)
     {
         $num = $num % 100;
