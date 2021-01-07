@@ -2,52 +2,246 @@
 
 /* @var $this yii\web\View */
 
-$this->title = 'My Yii Application';
+use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\widgets\ListView;
+use yii\widgets\Pjax;
+use app\models\SearchForm;
+use yii\widgets\ActiveForm;
+
+$this->title = 'Список резюме';
+
+$search = new SearchForm();
+
 ?>
-<div class="site-index">
 
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
+<?php 
+$script = <<< JS
+$(document).ready(function() {
+    // setting a default timeout for pjax
+    $.pjax.defaults.timeout = 1200;
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
+    $('#spec-search').nSelect({
+        firstTitle: 'Выберите профессию',
+        afterChange: function(el) {
+            $(this)[0].firstTitle = el[0].innerText;
 
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
+        }
+    });
+
+    $('#city-search').nSelect({
+        firstTitle: 'Выберите город',
+        afterChange: function(el) {
+            $(this)[0].firstTitle = el[0].innerText;
+
+        }
+    })
+
+    $('#salary').change(function(evt) {
+        const url = new URL(window.location);
+        url.searchParams.set('desired_salary', evt.target.value); 
+        history.pushState(null, null, url);
+        $.pjax({
+            url: url,
+            container: '#p0'
+        });
+    })
+    $('.field-spec-search>.nselect>.nselect__inner>ul>li>span').click(function(evt) {
+        const url = new URL(window.location);
+        url.searchParams.set('specialization', evt.target.parentElement.dataset.val); 
+        history.pushState(null, null, url);
+        $.pjax({
+            url: url,
+            container: '#p0'
+        });
+    })
+
+    $('.field-city-search>.nselect>.nselect__inner>ul>li>span').click(function(evt) {
+        const url = new URL(window.location);
+        url.searchParams.set('city', evt.target.parentElement.dataset.val); 
+        history.pushState(null, null, url);
+        $.pjax({
+            url: url,
+            container: '#p0'
+        });
+    })
+    $('#agefrom').change(function(evt) {
+        const url = new URL(window.location);
+        url.searchParams.set('agefrom', evt.target.value); 
+        history.pushState(null, null, url);
+        $.pjax({
+            url: url,
+            container: '#p0'
+        });
+    })
+    $('#ageto').change(function(evt) {
+        const url = new URL(window.location);
+        url.searchParams.set('ageto', evt.target.value); 
+        history.pushState(null, null, url);
+        $.pjax({
+            url: url,
+            container: '#p0'
+        });
+    })
+    $('input[type="radio"]').click(function(evt) {
+        const url = new URL(window.location);
+        url.searchParams.set('experience', $('input[type="radio"]:checked').val()); 
+        history.pushState(null, null, url);
+        $.pjax({
+            url: url,
+            container: '#p0'
+        });
+    })
+    $('#resumesearch-employment>.form-check>input:checkbox').click(function(evt) {
+        const url = new URL(window.location);
+        let empParam = '';
+        $('#resumesearch-employment>.form-check>input:checkbox:checked').each(function(){
+            empParam += $(this).val();
+        })
+        url.searchParams.set('employment', empParam); 
+        history.pushState(null, null, url);
+        $.pjax({
+            url: url,
+            container: '#p0'
+        });
+    })
+    $('#resumesearch-schedule>.form-check>input:checkbox').click(function(evt) {
+        const url = new URL(window.location);
+        let empParam = '';
+        $('#resumesearch-schedule>.form-check>input:checkbox:checked').each(function(){
+            empParam += $(this).val();
+        })
+        url.searchParams.set('schedule', empParam); 
+        history.pushState(null, null, url);
+        $.pjax({
+            url: url,
+            container: '#p0'
+        });
+    })
+});
+
+JS;
+$this->registerJs($script);
+ ?>
+<div class="header-search">
+    <div class="container">
+        <div class="header-search__wrap">
+            <?php $form = ActiveForm::begin(['id' => 'searchForm', 'class' => 'header-search__form w100']); ?>
+                <img src="<?= Url::to('@web/images/dark-search.svg') ?>" 
+                    alt="Поиск среди резюме" 
+                    class="dark-search-icon header-search__icon">
+                <?= $form->field($search, 'q')->textInput(['class' => 'header-search__input'])->label(false); ?>
+                <?= Html::button('Найти', [
+                    'class' => 'blue-btn header-search__btn', 
+                    'type' => 'submit', 
+                    'form' => 'searchForm'
+                    ]); ?>
+            <?php ActiveForm::end(); ?>
+        </div>
     </div>
+</div>
 
-    <div class="body-content">
-
+<div class="content">
+    <div class="container">
+        <h1 class="main-title mt24 mb16"><?= $this->title; ?></h1>
+        <button class="vacancy-filter-btn">Фильтр</button>
         <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
+            <div class="col-lg-9 desctop-992-pr-16">
+                <?php Pjax::begin([
+                    'enablePushState' => true, 
+                    'formSelector' => '#searcher',
+                    'linkSelector' => '.run-pjax',
+                ]); ?>
+                <div class="d-flex align-items-center flex-wrap mb8">
+                    <span class="paragraph mr16">Найдено <?= $listResume->totalCount ?> резюме</span>
+                    <div class="vakancy-page-header-dropdowns">
+                        <div class="vakancy-page-wrap show mr16">
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="#">За день</a>
+                                <a class="dropdown-item" href="#">За год</a>
+                                <a class="dropdown-item" href="#">За все время</a>
+                            </div>
+                        </div>
+                        <div class="vakancy-page-wrap show">
+                            <button class="vakancy-page-btn vakancy-btn dropdown-toggle" 
+                                role="button" id="dropdownMenuLink" data-toggle="dropdown" 
+                                aria-haspopup="true" aria-expanded="false">
+                                <span class="filter">Сортировать</span>
+                                <i class="fas fa-angle-down arrowDown"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
+                           <!-- sort links -->
+                            <?= Html::a("По увеличению зарплаты", Url::to(['/', 'salary_asc' => 1]), 
+                                ['class' => 'dropdown-item run-pjax', 'data-pjax' => 1]) ?>
+                            <?= Html::a("По уменьшению зарплаты", Url::to(['/', 'salary_desc' => 2]), 
+                                ['class' => 'dropdown-item run-pjax', 'data-pjax' => 1]) ?>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
+                <?= ListView::widget([
+                    'dataProvider' => $listResume,
+
+                    'itemView' => function ($model, $key, $index, $widget) {
+                        return $this->render('_allresume', ['model' => $model]);
+                    },
+                    'layout' => "{items}\n{pager}",
+                    'summary' => "Найдено {totalCount} резюме",
+
+                    'itemOptions' => [
+                        'tag' => 'div',
+                        'class' => 'vakancy-page-block company-list-search__block resume-list__block p-rel mb16'
+                    ],
+
+                    'emptyText' => 'Вы не опубликовали еще ни одного резуме.',
+                    'emptyTextOptions' => [
+                        'tag' => 'p'
+                    ],
+
+                    'pager' => [
+                        // 'firstPageLabel' => 'Первая',
+                        'firstPageCssClass' => false,
+                        'lastPageCssClass' => false,
+                        // 'lastPageLabel' => 'Последняя',
+                        'nextPageLabel' => 'Далее <img class="ml8" src="/images/mini-right-arrow.svg" alt="arrow">',
+                        'prevPageLabel' => '<img class="mr8" src="/images/mini-left-arrow.svg" alt="arrow"> Назад',        
+                        'maxButtonCount' => 5,
+                        'prevPageCssClass' => 'page-link-prev',
+                        'nextPageCssClass' => 'page-link-next',
+                        'options' => [
+                            'class' => 'dor-pagination mb128',
+                        ],
+                    ],
+
+                ]); ?>
+                <?php Pjax::end(); ?>
+
             </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
+            <div class="col-lg-3 desctop-992-pl-16 d-flex flex-column vakancy-page-filter-block vakancy-page-filter-block-dnone">
+                <div class="vakancy-page-filter-block__row mobile-flex-992 mb24 d-flex justify-content-between align-items-center">
+                    <div class="heading">Фильтр</div>
+                    <img class="cursor-p" src="<?= Url::to('@web/images/big-cancel.svg') ?>" alt="Сбросить фильтр">
+                </div>
+                <div class="signin-modal__switch-btns-wrap resume-list__switch-btns-wrap mb16">
+                    <?= Html::a("Все", Url::to(['site/index']), 
+                        ['class' => 'signin-modal__switch-btn active run-pjax', 'data-pjax' => 1]) ?>
+                    <?= Html::a("Мужчины", Url::to(['/', 'gender' => 1]), 
+                        ['class' => 'signin-modal__switch-btn data run-pjax', 'data-pjax' => 1]) ?>
+                    <?= Html::a("Женщины", Url::to(['/', 'gender' => 2]), 
+                        ['class' => 'signin-modal__switch-btn data run-pjax', 'data-pjax' => 1]) ?>
+                </div>
+                <!-- Форма фильтрации -->
+                <?= $this->render('_search', ['model' => $searchModel]) ?>
+                <!-- Форма фильтрации -->
+                <div class="vakancy-page-filter-block__row vakancy-page-filter-block__show-vakancy-btns mb24 d-flex flex-wrap align-items-center mobile-jus-cont-center">
+                    <a class="link-orange-btn orange-btn mr24 mobile-mb12" href="#">Показать <span>1 230</span>
+                        вакансии</a>
+                    <a href="#">Сбросить все</a>
+                </div>
             </div>
         </div>
-
     </div>
 </div>

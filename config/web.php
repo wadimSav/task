@@ -5,13 +5,26 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
+    'name' => 'TestTask',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'layout' => 'resume',
+    'sourceLanguage' => 'ru_RU',
+    'language' => 'ru_RU',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'inflection' => [
+            'class' => 'wapmorgan\yii2inflection\Inflection',
+        ],
+        'formatter' => [
+            'locale' => 'ru-RU',
+        ],
+        'session'=>[
+            'timeout'=>180,
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'testtask',
@@ -43,14 +56,24 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
+        
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => false,
             'rules' => [
+                '/' => 'site/index',
+                'myresume' => 'site/myresume',
+                'create/resume' => 'site/create',
+                'site/experience' => 'site/experience',
+                'myresume/detail/<id:\d+>' => 'site/detail',
+                'myresume/delete/<id:\d+>' => 'site/delete',
+                'myresume/edit/<id:\d+>' => 'site/edit',
+                'myresume/update/<id:\d+>' => 'site/update',
+                'generate' => 'site/generate',
             ],
         ],
-        */
+        
     ],
     'params' => $params,
 ];
