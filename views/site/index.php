@@ -6,9 +6,12 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ListView;
 use yii\widgets\Pjax;
-use yii\helpers\VarDumper;
+use app\models\SearchForm;
+use yii\widgets\ActiveForm;
 
 $this->title = 'Список резюме';
+
+$search = new SearchForm();
 
 ?>
 
@@ -123,11 +126,17 @@ $this->registerJs($script);
 <div class="header-search">
     <div class="container">
         <div class="header-search__wrap">
-            <form class="header-search__form">
-                <a href="#"><img src="/images/dark-search.svg" alt="search" class="dark-search-icon header-search__icon"></a>
-                <input class="header-search__input" type="text" placeholder="Поиск по резюме и навыкам">
-                <button type="button" class="blue-btn header-search__btn">Найти</button>
-            </form>
+            <?php $form = ActiveForm::begin(['id' => 'searchForm', 'class' => 'header-search__form w100']); ?>
+                <img src="<?= Url::to('@web/images/dark-search.svg') ?>" 
+                    alt="Поиск среди резюме" 
+                    class="dark-search-icon header-search__icon">
+                <?= $form->field($search, 'q')->textInput(['class' => 'header-search__input'])->label(false); ?>
+                <?= Html::button('Найти', [
+                    'class' => 'blue-btn header-search__btn', 
+                    'type' => 'submit', 
+                    'form' => 'searchForm'
+                    ]); ?>
+            <?php ActiveForm::end(); ?>
         </div>
     </div>
 </div>
@@ -154,15 +163,19 @@ $this->registerJs($script);
                             </div>
                         </div>
                         <div class="vakancy-page-wrap show">
-                            <button class="vakancy-page-btn vakancy-btn dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="vakancy-page-btn vakancy-btn dropdown-toggle" 
+                                role="button" id="dropdownMenuLink" data-toggle="dropdown" 
+                                aria-haspopup="true" aria-expanded="false">
                                 <span class="filter">Сортировать</span>
                                 <i class="fas fa-angle-down arrowDown"></i>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 
                            <!-- sort links -->
-                            <?= Html::a("По увеличению зарплаты", Url::to(['/', 'salary_asc' => 1]), ['class' => 'dropdown-item run-pjax', 'data-pjax' => 1]) ?>
-                            <?= Html::a("По уменьшению зарплаты", Url::to(['/', 'salary_desc' => 2]), ['class' => 'dropdown-item run-pjax', 'data-pjax' => 1]) ?>
+                            <?= Html::a("По увеличению зарплаты", Url::to(['/', 'salary_asc' => 1]), 
+                                ['class' => 'dropdown-item run-pjax', 'data-pjax' => 1]) ?>
+                            <?= Html::a("По уменьшению зарплаты", Url::to(['/', 'salary_desc' => 2]), 
+                                ['class' => 'dropdown-item run-pjax', 'data-pjax' => 1]) ?>
                                 
                             </div>
                         </div>
@@ -210,15 +223,15 @@ $this->registerJs($script);
             <div class="col-lg-3 desctop-992-pl-16 d-flex flex-column vakancy-page-filter-block vakancy-page-filter-block-dnone">
                 <div class="vakancy-page-filter-block__row mobile-flex-992 mb24 d-flex justify-content-between align-items-center">
                     <div class="heading">Фильтр</div>
-                    <img class="cursor-p" src="/images/big-cancel.svg" alt="cancel">
+                    <img class="cursor-p" src="<?= Url::to('@web/images/big-cancel.svg') ?>" alt="Сбросить фильтр">
                 </div>
                 <div class="signin-modal__switch-btns-wrap resume-list__switch-btns-wrap mb16">
-                    <?= Html::a("Все", 
-                        Url::to(['site/index']), 
-                        ['class' => 'signin-modal__switch-btn active run-pjax', 'data-pjax' => 1]
-                    ) ?>
-                    <?= Html::a("Мужчины", Url::to(['/', 'gender' => 1]), ['class' => 'signin-modal__switch-btn data run-pjax', 'data-pjax' => 1]) ?>
-                    <?= Html::a("Женщины", Url::to(['/', 'gender' => 2]), ['class' => 'signin-modal__switch-btn data run-pjax', 'data-pjax' => 1]) ?>
+                    <?= Html::a("Все", Url::to(['site/index']), 
+                        ['class' => 'signin-modal__switch-btn active run-pjax', 'data-pjax' => 1]) ?>
+                    <?= Html::a("Мужчины", Url::to(['/', 'gender' => 1]), 
+                        ['class' => 'signin-modal__switch-btn data run-pjax', 'data-pjax' => 1]) ?>
+                    <?= Html::a("Женщины", Url::to(['/', 'gender' => 2]), 
+                        ['class' => 'signin-modal__switch-btn data run-pjax', 'data-pjax' => 1]) ?>
                 </div>
                 <!-- Форма фильтрации -->
                 <?= $this->render('_search', ['model' => $searchModel]) ?>

@@ -2,18 +2,32 @@
 
 namespace app\controllers;
 
+use app\models\enums\Specialist;
 use Yii;
 use yii\web\Controller;
 use app\models\ResumeForm;
 use app\models\ExperienceForm;
 use app\models\ResumeSearch;
-use Faker\Factory;
-use yii\helpers\VarDumper;
+use app\models\SearchForm;
 use yii\web\UploadedFile as WebUploadedFile;
 use yii\data\ActiveDataProvider;
+use yii\helpers\Html;
 
 class SiteController extends Controller
 {
+
+    public function beforeAction($action)
+    {
+        $search = new SearchForm();
+
+        if($search->load(Yii::$app->request->post()) && $search->validate())
+        {
+            $q = Html::encode($search->q);
+            return $this->redirect(Yii::$app->urlManager->createUrl(['site/search', 'q' => $q]));
+        }
+        return true;
+    }
+    
     /**
      * Displays homepage.
      *
@@ -146,54 +160,44 @@ class SiteController extends Controller
         }
     }
 
+
     /**
-     * Generates 100 test resumes in the database
+     * Осуществляет поиск по названию профессии 'resume.specialization' и в тексте колонки о себе 'resume.about'
      * 
+     * @var string $q  параметр из запроса
+     * @var array $specIdList  пустой массив
+     * @var string $specValueList  пустая строка
+     * @var string $pattern  regExp по которой ищем
+     * @var array $specializationData  перечисление Specialist::listData()
      */
-    public function actionGenerate()
+    public function actionSearch()
     {
-        $faker = Factory::create('ru_RU');
+        $q = Yii::$app->getRequest()->getQueryParam('q');
+        $specIdList = []; 
+        $specValueList = ''; 
+        $pattern = "/$q/iu";
 
-        for ($i = 0; $i < 20; $i++) {
-            $resume = new ResumeForm();
-            $resume->image = $faker->file(Yii::getAlias('@app/web/images/'), Yii::getAlias('@app/web/images/faker-images/'), false);
-            $resume->surname = (($faker->randomDigit % 2) == 0) ? $faker->lastName('male') : $faker->lastName('female');
-            $resume->name = (($faker->randomDigit % 2) == 0) ? $faker->firstName('male') : $faker->firstName('female');
-            $resume->patronymic = (($faker->randomDigit % 2) == 0) ? $faker->middleName('male') : $faker->middleName('female');
-            $resume->birthday = Yii::$app->formatter->asDatetime($faker->dateTime('now'), 'php:Y-m-d H:i:s');
-            $resume->gender = (($faker->randomDigit % 2) == 0) ? 1 : 2;
-            $resume->city = rand(1, 7);
-            $resume->email = $faker->freeEmail;
-            $resume->phone = $faker->regexify('^\+[0-9]{1} [0-9]{3} [0-9]{3}-[0-9]{2}-[0-9]{2}$');
-            $resume->specialization = rand(1, 26);
-            $resume->desired_salary = rand(5000, 200000);
-            $resume->employment = rand(1, 5);
-            $resume->schedule = rand(1, 5);
-            $resume->experience = (($faker->randomDigit % 2) == 0) ? 0 : 1;
-            $resume->about = $faker->text(rand(1500, 2500));
-            $resume->viewed = rand(10, 150);
-            $resume->published_at = $faker->dateTime('now');
-            $resume->updated_at = $faker->dateTime('now');
-
-            if($resume->save(false)){
-                if($resume->experience == 1){
-                    $exp = new ExperienceForm();
-                    $exp->month = rand(0, 11);
-                    $exp->year = $faker->date('Y', 2010);
-                    $exp->month_end_work = rand(0, 11);
-                    $exp->year_end_work = $faker->date('Y', 'now');
-                    $exp->until_now_work = (($faker->randomDigit % 2) == 0) ? false : true;
-                    $exp->organization = $faker->word();
-                    $exp->exp_spec = rand(1, 26);
-                    $exp->responsibility = $faker->text(rand(300, 500));
-                    $exp->resume_id = $resume->id;
-
-                    if($exp->save(false)){
-                    }
-                }
+        $specializationData = Specialist::listData();
+        
+        foreach ($specializationData as $key => $value) {
+            if (preg_match($pattern, $value) === 0) {
+            } else {
+                array_push($specIdList, $key);
+                $specValueList .= $value;
             }
         }
-        return $this->redirect(['/']);
-        // die('Data generation is complete!');
+        
+        $query = ResumeForm::find()->andFilterWhere([
+                'in', 'specialization', 
+                array_unique($specIdList, SORT_NUMERIC)
+                ])->orFilterWhere(['like', 'about', $q]);
+
+        $resultSearch = $query->all();
+
+        return $this->render('search', [
+            'resultSearch' => $resultSearch,
+            'q' => $q
+        ]);
     }
+
 }
