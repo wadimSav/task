@@ -56,10 +56,19 @@ class ResumeSearch extends ResumeForm
 
         $searchParam = $params;
 
-        $query->andFilterWhere(['gender' => $searchParam['gender']]);
-        $query->andFilterWhere(['city' => $searchParam['city']]);
-        $query->andFilterWhere(['<=', 'desired_salary', $searchParam['desired_salary']]);
-        $query->andFilterWhere(['specialization' => $searchParam['specialization']]);
+        if(isset($searchParam['gender'])){
+            $query->andFilterWhere(['gender' => $searchParam['gender']]);
+        }
+        if(isset($searchParam['city'])){
+            $query->andFilterWhere(['city' => $searchParam['city']]);
+        }
+        if(isset($searchParam['desired_salary'])){
+            $query->andFilterWhere(['<=', 'desired_salary', $searchParam['desired_salary']]);
+        }
+        if(isset($searchParam['specialization'])){
+            $query->andFilterWhere(['specialization' => $searchParam['specialization']]);
+        }
+        
         if (array_key_exists('salary_asc', $searchParam)) {
             $query->addOrderBy('desired_salary ASC');
         } elseif (array_key_exists('salary_desc', $searchParam)) {
@@ -83,14 +92,16 @@ class ResumeSearch extends ResumeForm
             $maxAge = $maxDate->format('Y-m-d H:i:s');
             $query->andFilterWhere(['between', 'birthday', $maxAge, $minAge]);
         }
-        if($searchParam['experience'] == 1){
-            $query->andFilterWhere(['experience' => 0]);
-        } elseif($searchParam['experience'] == 2){
-            $query->andFilterWhere(['between', '(experience.year_end_work) - (experience.year)', 1, 3]);
-        } elseif($searchParam['experience'] == 3){
-            $query->andFilterWhere(['between', '(experience.year_end_work) - (experience.year)', 3, 6]);
-        } elseif($searchParam['experience'] == 4){
-            $query->andFilterWhere(['>', '(experience.year_end_work) - (experience.year)', 6]);
+        if(isset($searchParam['experience'])){
+            if($searchParam['experience'] == 1){
+                $query->andFilterWhere(['experience' => 0]);
+            } elseif($searchParam['experience'] == 2){
+                $query->andFilterWhere(['between', '(experience.year_end_work) - (experience.year)', 1, 3]);
+            } elseif($searchParam['experience'] == 3){
+                $query->andFilterWhere(['between', '(experience.year_end_work) - (experience.year)', 3, 6]);
+            } elseif($searchParam['experience'] == 4){
+                $query->andFilterWhere(['>', '(experience.year_end_work) - (experience.year)', 6]);
+            }
         }
 
         if(isset($searchParam['employment'])){

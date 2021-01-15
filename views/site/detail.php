@@ -150,7 +150,7 @@ $this->title = 'Резюме ' . Specialist::getLabel($resume->specialization);
                                                 if ($firstKey !== $lastKey) {
                                                     $diffMonts = $lastKey - $firstKey;
                                                     echo ' и ' . $diffMonts . $resume->num2word($diffMonts, [' месяц', ' месяца', ' месяцев']);
-                                                } ?>
+                                                } else { $diffMonts = 0; } ?>
                                             </h3>
                                         </div>
                                         <div class="col-md-4 mb16">

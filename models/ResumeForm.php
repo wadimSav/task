@@ -27,39 +27,48 @@ class ResumeForm extends ActiveRecord
     {
         return [
             // required fields
-            [['surname',  'name', 'patronymic', 'gender',
-              'city', 'email', 'phone', 'specialization', 'desired_salary', 
-              'employment', 'schedule'], 'required',
-              'message' => 'Поле обязательно к заполнению'],
+            [
+                [
+                'surname',
+                'name', 
+                'patronymic', 
+                'gender',
+                'city', 
+                'email', 
+                'phone', 
+                'specialization', 
+                'desired_salary', 
+                'employment', 
+                'schedule'
+                ], 
+                'required',
+                'message' => 'Поле обязательно к заполнению'
+            ],
+            ['file', 'required', 'message' => 'Пожалуйста, загрузите Ваше фото'],
+            ['birthday', 'required', 'message' => 'Укажите пожалуйста вашу дату рождения'],
 
-              [['gender', 'city', 'specialization', 'employment', 'schedule', 'experience'], 'integer'],
+            [['surname',  'name', 'patronymic'], 'string', 'max' => 30],
 
-              // Номер телефона
-              ['phone', 'match', 'pattern' => '/^\+[0-9]{1} [0-9]{3} [0-9]{3}-[0-9]{2}-[0-9]{2}$/',
-               'message' => 'Проверьте правильность введенного номера по шаблону +7 ___ ___-__-__'],
+            [['gender', 'city', 'specialization', 'employment', 'schedule', 'experience'], 'integer'],
 
-              ['file', 'required', 'message' => 'Пожалуйста, будьте открытым, загрузите Ваше фото'],
+            // Номер телефона
+            ['phone', 'match', 'pattern' => '/^\+[0-9]{1} [0-9]{3} [0-9]{3}-[0-9]{2}-[0-9]{2}$/',
+            'message' => 'Проверьте правильность введенного номера по шаблону +7 ___ ___-__-__'],
 
-              // День рождения
-              ['birthday', 'required', 'message' => 'Укажите пожалуйста вашу дату рождения'],
+            [['image', 'about'], 'string'],
 
-              [['image', 'about'], 'string'],
+            [['viewed', 'updated_at'], 'default'],
+            
+            // Желаемая зарплата
+            ['desired_salary', 'in', 'range' => range(0, 500000), 
+            'message' => 'Значение не должно быть отрицательным и превышать 500000'],
 
-              [['viewed', 'updated_at'], 'default'],
-              
-              // Желаемая зарплата
-              ['desired_salary', 'in', 'range' => range(0, 500000), 
-              'message' => 'Значение не должно быть отрицательным и превышать 500000'],
-
-              [['image'], 'safe'],
-
-              // email has to be a valid email address
-              ['email', 'email', 'message' => 'Ведите правильный адрес почтового ящика'],
-              [['file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg']
+            // email has to be a valid email address
+            ['email', 'email', 'message' => 'Ведите правильный адрес почтового ящика'],
+            [['file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg']
 
         ];
     }
-
 
     /**
      * Relationship with a table experience
@@ -68,22 +77,6 @@ class ResumeForm extends ActiveRecord
     {
        return $this->hasMany(ExperienceForm::className(), ['resume_id' => 'id']);            
     }
-
-    /**
-     * Loading an image
-     * 
-     * @return bool
-     */
-    public function upload()
-    {
-        if($this->validate('file')){
-            $this->file->saveAs('images/faker-images/' . $this->file->name);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 
     /**
      * Setting the time to create and update a record
@@ -97,7 +90,7 @@ class ResumeForm extends ActiveRecord
                     ActiveRecord::EVENT_BEFORE_INSERT => ['published_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
                 ],
-                'value' => function() { return Yii::$app->formatter->asDatetime('now', 'php:Y-m-d H:i:s'); } // unix timestamp },
+                'value' => function() { return Yii::$app->formatter->asDatetime('now', 'php:Y-m-d H:i:s'); }
             ]
         ];
     }

@@ -7,13 +7,25 @@ $db = require __DIR__ . '/test_db.php';
  */
 return [
     'id' => 'basic-tests',
+    'name' => 'TestTask',
     'basePath' => dirname(__DIR__),
+    'layout' => 'resume',
+    'language' => 'ru-RU',
+    'sourceLanguage' => 'ru-RU',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
-    'language' => 'en-US',
     'components' => [
+        'inflection' => [
+            'class' => 'wapmorgan\yii2inflection\Inflection',
+        ],
+        'formatter' => [
+            'locale' => 'ru-RU',
+        ],
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ],
         'db' => $db,
         'mailer' => [
             'useFileTransport' => true,
@@ -22,10 +34,19 @@ return [
             'basePath' => __DIR__ . '/../web/assets',
         ],
         'urlManager' => [
-            'showScriptName' => true,
-        ],
-        'user' => [
-            'identityClass' => 'app\models\User',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'enableStrictParsing' => false,
+            'rules' => [
+                '/' => 'site/index',
+                'myresume' => 'site/myresume',
+                'create/resume' => 'site/create',
+                'site/experience' => 'site/experience',
+                'myresume/detail/<id:\d+>' => 'site/detail',
+                'myresume/delete/<id:\d+>' => 'site/delete',
+                'myresume/edit/<id:\d+>' => 'site/edit',
+                'myresume/update/<id:\d+>' => 'site/update',
+            ],
         ],
         'request' => [
             'cookieValidationKey' => 'test',

@@ -41,8 +41,7 @@ $this->title = 'Новое резюме';
                             </div>
                             <label class="custom-file-upload">
 
-                                <?= $form->field($model, 'image', ['enableLabel' => false])
-                                    ->textInput(['type' => 'hidden']) ?>
+                                
                                 <?= $form->field($model, 'file', ['enableLabel' => false])->fileInput() ?>
 
                                 Загрузить фото

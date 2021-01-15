@@ -32,7 +32,7 @@ use app\models\enums\Monts;
     <h3 class="mini-title mobile-off"><?= Specialist::getLabel($model->specialization) ?></h3>
     <div class="d-flex align-items-center flex-wrap mb8 ">
         <span class="mr16 paragraph"><?= $model->desired_salary ?> ₽</span>
-        <?php if($model->exp[0]){ ?> 
+        <?php if($model->exp){ ?> 
         <span class="mr16 paragraph">
             Опыт работы 
             <?= $model->exp[0]->year_end_work - $model->exp[0]->year . ' ' . 
@@ -50,7 +50,7 @@ use app\models\enums\Monts;
         <span class="mr16 paragraph"><?= Cities::getLabel($model->city) ?></span>
         <span class="mr16 paragraph"><?= Gender::getLabel($model->gender) ?></span>
     </div>
-    <?php if($model->exp[0]){ ?>
+    <?php if($model->exp){ ?>
         <p class="paragraph tbold mobile-off">Последнее место работы</p>
         <div class="company-list-search__block-middle">
             <h3 class="mini-title desktop-off"><?= $model->exp[0]->organization ?></h3>
