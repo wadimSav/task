@@ -56,6 +56,7 @@ $config = [
             'enableStrictParsing' => true,
             'rules' => [
                 '/' => 'site/index',
+                'search/' => 'site/search',
                 'myresume' => 'site/myresume',
                 'create/resume' => 'site/create',
                 'site/experience' => 'site/experience',
