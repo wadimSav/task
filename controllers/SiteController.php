@@ -2,17 +2,33 @@
 
 namespace app\controllers;
 
+use app\models\enums\Specialist;
 use Yii;
 use yii\web\Controller;
 use app\models\ResumeForm;
 use app\models\ExperienceForm;
 use app\models\ResumeSearch;
 use yii\helpers\VarDumper;
+use app\models\SearchForm;
 use yii\web\UploadedFile as WebUploadedFile;
 use yii\data\ActiveDataProvider;
+use yii\helpers\Html;
 
 class SiteController extends Controller
 {
+
+    public function beforeAction($action)
+    {
+        $search = new SearchForm();
+
+        if($search->load(Yii::$app->request->post()) && $search->validate())
+        {
+            $q = Html::encode($search->q);
+            return $this->redirect(Yii::$app->urlManager->createUrl(['site/search', 'q' => $q]));
+        }
+        return true;
+    }
+    
     /**
      * Displays homepage.
      *
@@ -162,6 +178,47 @@ class SiteController extends Controller
         
         return $this->render('editResume', [
             'model' => $oneResume,
+          ]);
+    }
+
+
+    /**
+     * Осуществляет поиск по названию профессии 'resume.specialization' и в тексте колонки о себе 'resume.about'
+     * 
+     * @var string $q  параметр из запроса
+     * @var array $specIdList  пустой массив
+     * @var string $specValueList  пустая строка
+     * @var string $pattern  regExp по которой ищем
+     * @var array $specializationData  перечисление Specialist::listData()
+     */
+    public function actionSearch()
+    {
+        $q = Yii::$app->getRequest()->getQueryParam('q');
+        $specIdList = []; 
+        $specValueList = ''; 
+        $pattern = "/$q/iu";
+
+        $specializationData = Specialist::listData();
+        
+        foreach ($specializationData as $key => $value) {
+            if (preg_match($pattern, $value) === 0) {
+            } else {
+                array_push($specIdList, $key);
+                $specValueList .= $value;
+            }
+        }
+        
+        $query = ResumeForm::find()->andFilterWhere([
+                'in', 'specialization', 
+                array_unique($specIdList, SORT_NUMERIC)
+                ])->orFilterWhere(['like', 'about', $q]);
+
+        $resultSearch = $query->all();
+
+        return $this->render('search', [
+            'resultSearch' => $resultSearch,
+            'q' => $q
         ]);
     }
+
 }
