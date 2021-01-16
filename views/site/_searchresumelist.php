@@ -28,8 +28,8 @@ $search = new SearchForm();
         <div class="d-flex align-items-center flex-wrap mb8 ">
             <span class="mr16 paragraph"><?= $resume->desired_salary ?> ₽</span>
             <span class="mr16 paragraph">Опыт работы
-                <?= $resume->exp[0]->year_end_work - $resume->exp[0]->year . ' ' . 
-                    $resume->num2word($resume->exp[0]->year_end_work - $resume->exp[0]->year, 
+                <?= $resume->exp->year_end_work - $resume->exp->year . ' ' . 
+                    $resume->num2word($resume->exp->year_end_work - $resume->exp->year, 
                     ['год', 'года', 'лет']) ?> 
             </span>
             <span class="mr16 paragraph"><?= Cities::getLabel($resume->city) ?></span>
