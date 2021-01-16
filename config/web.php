@@ -9,8 +9,8 @@ $config = [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'layout' => 'resume',
-    'sourceLanguage' => 'ru_RU',
-    'language' => 'ru_RU',
+    'sourceLanguage' => 'ru-RU',
+    'language' => 'ru-RU',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -22,19 +22,12 @@ $config = [
         'formatter' => [
             'locale' => 'ru-RU',
         ],
-        'session'=>[
-            'timeout'=>180,
-        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'testtask',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
-        ],
-        'user' => [
-            'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -60,7 +53,7 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => false,
+            'enableStrictParsing' => true,
             'rules' => [
                 '/' => 'site/index',
                 'myresume' => 'site/myresume',
@@ -70,7 +63,6 @@ $config = [
                 'myresume/delete/<id:\d+>' => 'site/delete',
                 'myresume/edit/<id:\d+>' => 'site/edit',
                 'myresume/update/<id:\d+>' => 'site/update',
-                'generate' => 'site/generate',
             ],
         ],
         
@@ -84,7 +76,7 @@ if (YII_ENV_DEV) {
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        // 'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 
     $config['bootstrap'][] = 'gii';

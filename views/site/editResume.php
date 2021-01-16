@@ -45,8 +45,6 @@ $this->title = 'Редактирование резюме';
                             </div>
                             <label class="custom-file-upload">
 
-                                <?= $form->field($model, 'image', ['enableLabel' => false])
-                                    ->textInput(['type' => 'hidden', 'value' => $model->image]) ?>
                                 <?= $form->field($model, 'file', ['enableLabel' => false])->fileInput() ?>
 
                                 Изменить фото

@@ -8,6 +8,7 @@ use yii\web\Controller;
 use app\models\ResumeForm;
 use app\models\ExperienceForm;
 use app\models\ResumeSearch;
+use yii\helpers\VarDumper;
 use app\models\SearchForm;
 use yii\web\UploadedFile as WebUploadedFile;
 use yii\data\ActiveDataProvider;
@@ -100,14 +101,22 @@ class SiteController extends Controller
         $model_exp = new ExperienceForm();
 
         if ($model->load(Yii::$app->request->post()) && $model_exp->load(Yii::$app->request->post())) {
+            // получаем имя файла из аттрибута модели
             $model->file = WebUploadedFile::getInstance($model, 'file');
-            $model->image = $model->file->name;
+            if(is_object($model->file)){
+                $fileName = $model->file->baseName . '.' . $model->file->extension;
+                $model->file->saveAs('images/faker-images/' . $fileName );
+                $model->image = $fileName;
+            }
             $model->birthday = Yii::$app->formatter->asDatetime($model->birthday, 'php:Y-m-d H:i:s');
-            $model->employment = implode('' ,$model->employment);
-            $model->schedule = implode('' ,$model->schedule);
+            if(is_array($model->employment)){
+                $model->employment = implode('' ,$model->employment);
+            }
+            if(is_array($model->schedule)){
+                $model->schedule = implode('' ,$model->schedule);
+            }
             
-            if ($model->save() && $model_exp->load(Yii::$app->request->post())) {
-                $model->upload();
+            if ($model->save(false) && $model_exp->load(Yii::$app->request->post())) {
                 $model_exp->resume_id = $model->id;
                 $model_exp->year = (int) $model_exp->year;
                 $model_exp->year_end_work = (int) $model_exp->year_end_work;
@@ -147,17 +156,29 @@ class SiteController extends Controller
     {
         $oneResume = ResumeForm::findOne($id);
         if ($oneResume->load(Yii::$app->request->post())) {
+            // получаем имя файла из аттрибута модели
             $oneResume->file = WebUploadedFile::getInstance($oneResume, 'file');
-            $oneResume->image = $oneResume->file->name;
+            if(is_object($oneResume->file)){
+                $fileName = $oneResume->file->baseName . '.' . $oneResume->file->extension;
+                $oneResume->file->saveAs('images/faker-images/' . $fileName );
+                $oneResume->image = $fileName;
+            }
             $oneResume->birthday = Yii::$app->formatter->asDatetime($oneResume->birthday, 'php:Y-m-d H:i:s');
-            $oneResume->employment = implode('' ,$oneResume->employment);
-            $oneResume->schedule = implode('' ,$oneResume->schedule);
+            if(is_array($oneResume->employment)){
+                $oneResume->employment = implode('' ,$oneResume->employment);
+            }
+            if(is_array($oneResume->schedule)){
+                $oneResume->schedule = implode('' ,$oneResume->schedule);
+            }
             if ($oneResume->save()) {
-                $oneResume->upload();
                 Yii::$app->session->setFlash('success', 'Резюме изменено успешно!');
                 return $this->redirect(['myresume']);
             }
         }
+        
+        return $this->render('editResume', [
+            'model' => $oneResume,
+          ]);
     }
 
 

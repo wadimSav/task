@@ -9,7 +9,10 @@ $this->title = 'Мои резюме';
 <div class="content">
         <div class="container">
             <div class="col-lg-9">
-                <div class="main-title mb32 mt50 d-flex justify-content-between align-items-center"><?= $this->title ?>
+                <div class="main-title mb32 mt50 d-flex justify-content-between align-items-center">
+                    <h1 class="main-title mt24 mb16">
+                        <?= $this->title ?>
+                    </h1>
                     <a href="create/resume" class="link-orange-btn orange-btn my-vacancies-add-btn">Добавить резюме</a>
                     <a class="my-vacancies-mobile-add-btn link-orange-btn orange-btn plus-btn" href="create/resume">+</a>
                 </div>

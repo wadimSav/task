@@ -51,7 +51,7 @@ AppAsset::register($this);
                             'linkOptions' => ['class' => 'nav-link'],
                             'options' => ['class' => 'nav-item' . (Yii::$app->controller->route == 'site/index' ? ' active' : '')]],
                             ['label' => 'Мои резюме', 
-                            'url' => ['/myresume'], 
+                            'url' => ['myresume'], 
                             'linkOptions' => ['class' => 'nav-link'],
                             'options' => ['class' => 'nav-item' . (Yii::$app->controller->route == 'site/myresume' ? ' active' : '')]],
                         ]

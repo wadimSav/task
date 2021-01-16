@@ -20,12 +20,14 @@ use app\models\enums\Specialist;
         <h2 class="mini-title mb8"><?= Specialist::getLabel($model->specialization) ?></h2>
         <div class="d-flex align-items-center flex-wrap mb8 ">
             <span class="mr16 paragraph"><?= $model->desired_salary ?> ₽</span>
+            <?php if($model->exp) { ?>
             <span class="mr16 paragraph">
                 Опыт работы 
                 <?= $model->exp[0]->year_end_work - $model->exp[0]->year . ' ' . 
                     $model->num2word($model->exp[0]->year_end_work - $model->exp[0]->year, 
                     ['год', 'года', 'лет']) ?> 
             </span>
+            <?php } ?>
             <span class="mr16 paragraph"><?= Cities::getLabel($model->city) ?></span>
         </div>
         <div class="d-flex flex-wrap">
