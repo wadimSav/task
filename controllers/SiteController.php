@@ -178,7 +178,7 @@ class SiteController extends Controller
         
         return $this->render('editResume', [
             'model' => $oneResume,
-          ]);
+        ]);
     }
 
 
